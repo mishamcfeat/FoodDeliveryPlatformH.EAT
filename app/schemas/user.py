@@ -14,21 +14,21 @@ class UserLogin(BaseModel):
 
 # For updating user profile
 class UserUpdate(BaseModel):
-    email: Optional[str]
-    # ... Add other fields if needed, like address, phone_number etc.
+    username: Optional[str] = None
+    email: Optional[str] = None
+    address: Optional[str] = None
+    phone_number: Optional[str] = None
+
     
 # Data structure returned to user
 class UserOut(BaseModel):
-    #model_config = ConfigDict(from_attributes=True)  # This allows for ORM objects to be converted to this Pydantic model
+    model_config = ConfigDict(from_attributes=True)  # This allows for ORM objects to be converted to this Pydantic model
     
     id: int
     username: str
     email: str
     address: Optional[str]
     phone_number: Optional[str]
-    
-    class Config:
-        orm_mode = True
 
 
 
