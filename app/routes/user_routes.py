@@ -20,7 +20,7 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
     # Data Validation: "user" parameter already validated the data using Pydantic
     # ORM: Create a new user instance and add to the database
     hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
-    db_user = User(username=user.username, email=user.email, password=hashed_password)
+    db_user = User(username=user.username, email=user.email, address=user.address, password=hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

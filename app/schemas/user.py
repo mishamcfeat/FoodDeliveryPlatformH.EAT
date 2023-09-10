@@ -5,6 +5,7 @@ from typing import Optional
 class UserCreate(BaseModel):
     username: str
     email: str
+    address = str
     password: str
 
 # For user login
@@ -27,7 +28,7 @@ class UserOut(BaseModel):
     id: int
     username: str
     email: str
-    address: Optional[str]
+    address: str
     phone_number: Optional[str]
 
 
