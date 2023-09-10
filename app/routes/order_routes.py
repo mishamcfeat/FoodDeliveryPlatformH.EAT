@@ -3,58 +3,75 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 import datetime
+import logging
 
-from schemas.order import OrderCreate, OrderUpdate, OrderItem, OrderOut
+from routes.user_routes import get_current_user
+from schemas.order import OrderCreate, OrderInit, OrderUpdate, OrderItem, OrderOut
 from db.get_db import get_db
-from models.database import User, Order, OrderItem
+from models.database import User, Order
 
 
 router = APIRouter()
 
-@router.post("/neworder/", response_model=OrderOut)
-async def place_order(order: OrderCreate, db: Session = Depends(get_db)):
-    # Fetch user's default address if delivery_address is not provided
-    if not order.delivery_address:
-        user = db.query(User).filter(User.id == order.user_id).first()
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        order.delivery_address = user.address
 
-    # Compute total_amount
-    total_amount = sum(item.quantity * item.price_at_time_of_order for item in order.order_items)
+@router.get("/test/")
+async def test_route():
+    return {"message": "Test route works!"}
 
-    # Set time_placed if not provided
-    time_placed = order.time_placed or datetime.datetime.utcnow()
+
+@router.post("/initiate_order/")
+async def initiate_order(init: OrderInit, db: Session = Depends(get_db), user: int = Depends(get_current_user)):
     
-    # Data Validation: "user" parameter already validated the data using Pydantic
-    # ORM: Create a new user instance and add to the database
+    # Fetch all of users data through users table
+    current_user = db.query(User).filter(User.id == user).first()
+    
+    # Fetch user's default address if delivery_address is not provided
+    if not init.delivery_address:
+        init.delivery_address = current_user.address
+    
+    # Initialise order details using restaurant_id & delivery_address
     db_order = Order(
-        user_id=order.user_id,
-        restaurant_id=order.restaurant_id,
-        delivery_address=order.delivery_address,
-        total_amount=total_amount,
-        status= "Pending",
-        time_placed=time_placed
+        user_id=current_user.id,
+        restaurant_id=init.restaurant_id,
+        delivery_address=init.delivery_address,
+        total_amount=0,
+        status="In Progress"
     )
     db.add(db_order)
     db.commit()
-    db.refresh(db_order)
-    
-    # ORM: Create order items associated with the order
-    # Pydantic validaes that order_items field contains list of items that conforms to OrderItem model 
-    # This is because order_items is defined as List[OrderItem] within the OrderCreate model
-    for item in order.order_items:
-        db_item = OrderItem(
-            order_id=db_order.id,
-            restaurant_item_id=item.restaurant_item_id,
-            quantity=item.quantity,
-            price_at_time_of_order=item.price_at_time_of_order
-        )
-        db.add(db_item)
-    db.commit()
-    # Add order items (if you're saving them separately)
 
     return {"order_id": db_order.order_id}
+
+
+
+@router.post("/add_item_to_order/{order_id}/")
+async def add_item(order_id: int, item: OrderItem, db: Session = Depends(get_db)):
+    db_order = db.query(Order).filter(Order.order_id == order_id).first()
+    if not db_order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    db_item = OrderItem(
+        order_id=order_id,
+        restaurant_item_id=item.restaurant_item_id,
+        quantity=item.quantity,
+        price_at_time_of_order=item.price_at_time_of_order
+    )
+    db.add(db_item)
+    db_order.total_amount += item.quantity * item.price_at_time_of_order
+    db.commit()
+    return {"message": "Item added successfully"}
+
+@router.post("/finalize_order/{order_id}/")
+async def finalize_order(order_id: int, db: Session = Depends(get_db)):
+    db_order = db.query(Order).filter(Order.order_id == order_id).first()
+    if not db_order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    db_order.status = "Placed"
+    db_order.time_placed = datetime.datetime.utcnow()
+
+    db.commit()
+    return {"message": "Order finalized"}
 
 @router.get("/{order_id}/", response_model=OrderOut)
 async def get_order(order_id: int, db: Session = Depends(get_db)):

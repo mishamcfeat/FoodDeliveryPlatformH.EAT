@@ -3,11 +3,16 @@ from typing import List, Optional
 import datetime
 
 class OrderItem(BaseModel):
-    user_id: int
-    item_id: int
+    order_id: int
+    restaurant_item_id: int
     quantity: int
     price_at_time_of_order: float
     
+class OrderInit(BaseModel):
+    restaurant_id: int
+    delivery_address: Optional[str] = None
+
+
 # total_amount, status, time_places, are all set server side
 class OrderCreate(BaseModel):
     user_id: int

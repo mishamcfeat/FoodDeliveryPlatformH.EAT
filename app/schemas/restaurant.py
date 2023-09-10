@@ -1,25 +1,30 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 from typing import List, Optional
 
-class MenuItemBase(BaseModel):
-    name: str
-    price: float
-
-class MenuItemCreate(MenuItemBase):
-    pass
-
-class MenuItemUpdate(BaseModel):
-    name: Optional[str] = None
-    price: Optional[float] = None
-
-class MenuItem(MenuItemBase):
-    item_id: int
-
-class Restaurant(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-    
-    restaurant_id: int
+class RestaurantBase(BaseModel):
     name: str
     address: str
-    menu: List[MenuItem]
 
+class RestaurantCreate(RestaurantBase):
+    pass
+
+class Restaurant(RestaurantBase):
+    id: int
+
+class RestaurantItemBase(BaseModel):
+    name: str
+    description: str
+    price: float
+
+class RestaurantItemCreate(RestaurantItemBase):
+    restaurant_id: int
+
+class RestaurantItemUpdate(RestaurantItemBase):
+    pass
+
+class RestaurantItem(RestaurantItemBase):
+    id: int
+    restaurant_id: int
+
+class RestaurantWithMenu(Restaurant):
+    items: List[RestaurantItem]
