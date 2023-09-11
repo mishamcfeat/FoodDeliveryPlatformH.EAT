@@ -29,7 +29,7 @@ class UserOut(BaseModel):
     username: str
     email: str
     address: str
-    phone_number: Optional[str]
+    phone_number: Optional[str] = None
 
 
 

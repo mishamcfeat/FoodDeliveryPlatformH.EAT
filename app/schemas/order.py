@@ -2,11 +2,10 @@ from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
 import datetime
 
-class OrderItem(BaseModel):
-    order_id: int
+class OrderItemSchema(BaseModel):
     restaurant_item_id: int
     quantity: int
-    price_at_time_of_order: float
+    price_at_time_of_order: Optional[float] = None
     
 class OrderInit(BaseModel):
     restaurant_id: int
@@ -21,7 +20,7 @@ class OrderCreate(BaseModel):
     status: Optional[str]
     delivery_address: str
     time_placed: Optional[datetime.datetime]
-    order_items: List[OrderItem]
+    order_items: List[OrderItemSchema]
 
     
 class OrderUpdate(BaseModel):
@@ -38,6 +37,6 @@ class OrderOut(BaseModel):
     delivery_address: str
     time_placed: datetime.datetime
     
-    order_items: List[OrderItem]
+    order_items: List[OrderItemSchema]
 
     

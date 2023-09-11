@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 import bcrypt
 import jwt
-#from jose.exceptions import JWTError
+from typing import List
 import datetime
 
 # Internal imports
@@ -14,6 +14,17 @@ from models.database import User
 
 router = APIRouter()
 TOKEN_BLACKLIST = set()
+
+@router.get("/list_users/", response_model=List[UserOut])
+async def list_users(db: Session = Depends(get_db)):
+    db_users = db.query(User).all()
+    if not db_users:
+        raise HTTPException(status=404, detail="No users found")
+    
+    # Use list comprehension to convert each user to a dictionary
+    users = [UserOut(id=user.id, username=user.username, email=user.email, address=user.address, phone_number=user.phone_number) for user in db_users]
+    
+    return users
 
 @router.post("/register/", response_model=UserOut)
 async def register_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -76,7 +87,7 @@ async def update_profile(user_id: int, user: UserUpdate, current_user_id: int = 
 @router.post("/logout/")
 async def logout_user(token: str = Depends(oauth2_scheme)):
     # Logic to log out a user or invalidate their token
-    # Note: This will be client-side on th react native app
+    # Note: This will be client-side on the react native app
     TOKEN_BLACKLIST.add(token)
     print(TOKEN_BLACKLIST)
     return {"message": "Logged out"}

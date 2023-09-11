@@ -4,18 +4,25 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 import datetime
 
-from schemas.restaurant import RestaurantCreate, RestaurantItemCreate, RestaurantItemUpdate
+from schemas.restaurant import RestaurantCreate, RestaurantItemCreate, RestaurantItemUpdate, RestaurantItemBase
 from routes.user_routes import get_current_user
-from schemas.order import OrderCreate, OrderInit, OrderUpdate, OrderItem, OrderOut
 from db.get_db import get_db
 from models.database import User, Order, Restaurant, RestaurantItem
 
 router = APIRouter()
 
-@router.get("/")
-async def list_restaurants():
+@router.get("/list_restaurants/")
+async def list_restaurants(db: Session = Depends(get_db)):
     # Logic to list all restaurants
-    return {"restaurants": ["restaurant1", "restaurant2"]}
+    all_rest = db.query(Restaurant).all()
+
+    if not all_rest:
+        # Option 1: Raise an error
+        raise HTTPException(status_code=404, detail="No restaurants found")
+
+    rests = [{"id": rest.id, "name": rest.name, "address": rest.address} for rest in all_rest]
+    return {"restaurants": rests}
+
 
 @router.post("/create_restaurant/")
 async def create_restaurant(restaurant: RestaurantCreate, db: Session = Depends(get_db)):
@@ -32,21 +39,49 @@ async def create_restaurant(restaurant: RestaurantCreate, db: Session = Depends(
 
 
 @router.get("/{restaurant_id}/")
-async def get_restaurant(restaurant_id: int):
+async def get_restaurant(restaurant_id: int, db: Session = Depends(get_db)):
     # Logic to fetch specific restaurant details
-    return {"restaurant": "restaurant_data"}
+    rest = db.query(Restaurant).filter(Restaurant.id == restaurant_id).first()
+    if not rest:
+        raise HTTPException(status_code=404, detail="No restaurant found for this id")
+    return {"restaurant": rest.__dict__}
 
 @router.get("/{restaurant_id}/menu/")
-async def restaurant_menu(restaurant_id: int):
-    # Logic to fetch the menu of a restaurant
-    return {"menu": ["item1", "item2"]}
+async def restaurant_menu(restaurant_id: int, db: Session = Depends(get_db)):
+    # Query to fetch all menu items of a restaurant
+    items = db.query(RestaurantItem).filter(RestaurantItem.restaurant_id == restaurant_id).all()
+    
+    if not items:
+        raise HTTPException(status_code=404, detail="No items found for this restaurant")
+    
+    # Convert the ORM objects to a list of dictionaries
+    food_items = [{"id": item.id, "name": item.name, "description": item.description, "price": item.price} for item in items]
+    
+    return {"menu": food_items}
 
-@router.post("/{restaurant_id}/menu/")
-async def add_menu_item(restaurant_id: int, item: RestaurantItemCreate):
+
+@router.post("/{restaurant_id}/menu/", status_code=201)
+async def add_menu_item(restaurant_id: int, item: RestaurantItemBase, db: Session = Depends(get_db)):
+    
+    # Check if restaurant exists
+    db_restaurant = db.query(Restaurant).filter(Restaurant.id == restaurant_id).first()
+    if not db_restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+    
     # Logic to add a new menu item for a restaurant
-    return {"message": "Menu item added"}
+    db_menu_item = RestaurantItem(name=item.name, description=item.description, price=item.price, restaurant_id=restaurant_id)
+    
+    db.add(db_menu_item)
+    db.commit()
+    db.refresh(db_menu_item)
+    
+    return {"message": "Menu item added", "item_id": db_menu_item.id}
+
 
 @router.put("/{restaurant_id}/menu/{item_id}/")
-async def update_menu_item(restaurant_id: int, item_id: int, item: RestaurantItemUpdate):
+async def update_menu_item(restaurant_id: int, item_id: int, item: RestaurantItemUpdate, db: Session = Depends(get_db)):
     # Logic to update a menu item for a restaurant
+    item = db.query(RestaurantItem).filter(RestaurantItem.id == item_id).update(item.model_dump(exclude_unset=True))
+    db.commit()
     return {"message": "Menu item updated"}
+

@@ -19,8 +19,10 @@ class RestaurantItemBase(BaseModel):
 class RestaurantItemCreate(RestaurantItemBase):
     restaurant_id: int
 
-class RestaurantItemUpdate(RestaurantItemBase):
-    pass
+class RestaurantItemUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float] = None
 
 class RestaurantItem(RestaurantItemBase):
     id: int
