@@ -31,7 +31,7 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
     # Data Validation: "user" parameter already validated the data using Pydantic
     # ORM: Create a new user instance and add to the database
     hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
-    db_user = User(username=user.username, email=user.email, address=user.address, password=hashed_password)
+    db_user = User(username=user.username, email=user.email, password=hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -42,7 +42,7 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
 async def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
     # Query for the user
     
-    db_user = db.query(User).filter(User.username == credentials.username).first()
+    db_user = db.query(User).filter(User.email == credentials.email).first()
     print(db_user.password)
     # Check if user exists and the password is correct
     if db_user: #and bcrypt.checkpw(credentials.password.encode('utf-8'), db_user.password.encode('utf-8')):

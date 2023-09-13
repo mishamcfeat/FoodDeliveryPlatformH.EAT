@@ -5,12 +5,11 @@ from typing import Optional
 class UserCreate(BaseModel):
     username: str
     email: str
-    address: str
     password: str
 
 # For user login
 class UserLogin(BaseModel):
-    username: str
+    email: str
     password: str
 
 # For updating user profile
@@ -28,7 +27,7 @@ class UserOut(BaseModel):
     id: int
     username: str
     email: str
-    address: str
+    address: Optional[str] = None
     phone_number: Optional[str] = None
 
 

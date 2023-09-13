@@ -1,0 +1,141 @@
+body{
+    height: 100vh;
+    background:  #fafafa79;
+}
+
+
+/* Navbar styles */
+.navbar {
+    display: flex;
+    justify-content: flex-end;
+    /* Aligns children to the right */
+    gap: 20px;
+    /* Space between the buttons */
+    padding: 10px 20px;
+    /* Some padding to move away from the very top and right */
+    width: 100%;
+    /* Full width */
+    position: fixed;
+    /* Make it stick to the top */
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    /* Assuming you want a white navbar, adjust as needed */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* A subtle shadow for depth */
+}
+
+/* Adjusted styles for the buttons in the top bar */
+.navbar .submit {
+    margin: 0;
+    /* Reset any margin */
+    padding: 10px 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 220px;
+    height: 59px;
+    color: #fff;
+    background: #0a0a0a;
+    border-radius: 50px;
+    font-size: 19px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 270px;
+    /* Adjusted for the navbar height and some additional space */
+    background: #fff;
+    padding-bottom: 30px;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    margin-top: 30px;
+}
+
+.text {
+    color: #3c009d;
+    font-size: 49px;
+    font-weight: 700;
+}
+
+.underline {
+    width: 61px;
+    height: 6px;
+    background: #000000;
+    border-radius: 9px;
+}
+
+.inputs {
+    margin-top: 55px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.input {
+    display: flex;
+    align-items: center;
+    margin: auto;
+    width: 480px;
+    height: 80px;
+    background: #eaeaea;
+    border-radius: 6px;
+}
+
+.input img {
+    margin: 0px 30px;
+}
+
+.input input {
+    height: 50px;
+    width: 400px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #797979;
+    font-size: 19px;
+}
+
+.Continue {
+    display: flex;
+    justify-content: center;
+    /* Aligns children to the right */
+    gap: 20px;
+    /* Space between the buttons */
+    padding: 10px 20px;
+    /* Some padding to move away from the very top and right */
+}
+
+.submit-continue {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 480px;
+    height: 59px;
+    color: #fff;
+    background: #0a0a0a;
+    border-radius: 6px;
+    font-size: 19px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-continue:hover {
+    background-color: #333; /* slightly lighter when hovered over */
+}
+
+.gray {
+    background: #eaeaea;
+    color: #676767
+}
