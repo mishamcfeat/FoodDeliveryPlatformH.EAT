@@ -43,7 +43,6 @@ async def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
     # Query for the user
     
     db_user = db.query(User).filter(User.email == credentials.email).first()
-    print(db_user.password)
     # Check if user exists and the password is correct
     if db_user: #and bcrypt.checkpw(credentials.password.encode('utf-8'), db_user.password.encode('utf-8')):
         # Token lasts for 30 minutes before re-verification is needed

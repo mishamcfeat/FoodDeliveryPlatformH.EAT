@@ -1,14 +1,20 @@
 import React from 'react';
 import './App.css';
-import './index.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import LoginSignup from './components/LoginSignup/LoginSignup.jsx'
+import './index.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import LoginSignup from './screens/LoginSignup/LoginSignup.jsx';
+import HomePage from './screens/HomePage/HomePage';
 
 function App() {
   return (
-    <div>
-      <LoginSignup />
-    </div>
+    <Router>
+      <div>
+        <Routes>
+          <Route path="/login-signup" element={<LoginSignup />} />
+          <Route path="/" element={<HomePage />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

@@ -1,20 +1,23 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from '../screens/Home';
-import Profile from '../screens/Profile';
-import OrderHistory from '../screens/OrderHistory';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import LoginSignup from '../screens/LoginSignup/LoginSignup';
+import Homepage from '../screens/HomePage/HomePage';
 
-function AppRouter() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/order-history" element={<OrderHistory />} />
-      </Routes>
-    </Router>
-  );
+function App() {
+    return (
+        <Router>
+            <nav>
+                <Link to="/">
+                    <img src={logo_icon} alt="Logo" />
+                </Link>
+                <Link to="/login-signup">Login / Signup</Link>
+            </nav>
+            <Routes>
+                <Route path="/login-signup" element={<LoginSignup />} />
+                <Route path="/" element={<Homepage />} />
+            </Routes>
+        </Router>
+    );
 }
 
-export default AppRouter;
-
+export default App;
