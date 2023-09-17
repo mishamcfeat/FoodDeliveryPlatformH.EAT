@@ -112,7 +112,7 @@ const LoginSignup = () => {
 
 
     return (
-        <div>
+        <div className='login-signup'>
             <Helmet>
                 <html lang="es" dir="ltr" />
                 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />

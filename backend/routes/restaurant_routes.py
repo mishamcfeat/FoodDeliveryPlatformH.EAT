@@ -1,11 +1,10 @@
-from fastapi import APIRouter, HTTPException
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, UploadFile, Depends, File
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-import datetime
+import shutil
+from pathlib import Path
 
 from schemas.restaurant import RestaurantCreate, RestaurantItemCreate, RestaurantItemUpdate, RestaurantItemBase
-from routes.user_routes import get_current_user
 from db.get_db import get_db
 from models.database import User, Order, Restaurant, RestaurantItem
 
@@ -36,6 +35,17 @@ async def create_restaurant(restaurant: RestaurantCreate, db: Session = Depends(
         raise HTTPException(status_code=400, detail=str(e))
     
     return {"restaurant": db_rest}
+
+@router.post("/upload_restaurant_image/")
+async def upload_restaurant_image(restaurant_name: str, image: UploadFile = File(...)):
+    try:
+        image_path = Path(f"assets/{restaurant_name}.jpg")  # Adjust the path and naming as needed
+        with image_path.open("wb") as buffer:
+            shutil.copyfileobj(image.file, buffer)
+        return {"filename": image_path.name}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Could not save image")
 
 
 @router.get("/{restaurant_id}/")

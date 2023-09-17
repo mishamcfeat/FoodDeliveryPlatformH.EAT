@@ -1,28 +1,25 @@
-$bg: #EDF2F0;
+.login-signup {
+    --bg: #EDF2F0;
+    --neu-1: #ecf0f3;
+    --neu-2: #d1d9e6;
+    --white: #f9f9f9;
+    --gray: #a0a5a8;
+    --black: #181818;
+    --red: #cb2525;
+    --transition: 1.25s;
 
-$neu-1: #ecf0f3;
-$neu-2: #d1d9e6;
-
-$white: #f9f9f9;
-$gray: #a0a5a8;
-$black: #181818;
-
-$purple: #cb2525;
-
-
-$transition: 1.25s;
-
-*,
-*::after,
-*::before {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    user-select: none;
+    *,
+    *::after,
+    *::before {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        user-select: none;
+    }
 }
 
 /* Generic */
-body {
+body .login-signup{
     width: 100%;
     height: 100vh;
     display: flex;
@@ -30,8 +27,8 @@ body {
     align-items: center;
     font-family: 'Montserrat', sans-serif;
     font-size: 12px;
-    background-color: $neu-1;
-    color: $gray;
+    background-color: var(--neu-1);
+    color: var(--gray);
 }
 
 /**/
@@ -42,10 +39,10 @@ body {
     min-height: 600px;
     height: 600px;
     padding: 25px;
-    background-color: $neu-1;
+    background-color: var(--neu-1);
     box-shadow:
-        10px 10px 10px $neu-2,
-        -10px -10px 10px $white;
+        10px 10px 10px var(--neu-2),
+        -10px -10px 10px var(--white);
     border-radius: 12px;
     overflow: hidden;
 
@@ -79,8 +76,8 @@ body {
     height: 100%;
     padding: 25px;
 
-    background-color: $neu-1;
-    transition: $transition;
+    background-color: var(--neu-1);
+    transition: var(--transition);
 }
 
 .form {
@@ -111,8 +108,8 @@ body {
 
         &:hover {
             box-shadow:
-                6px 6px 10px $neu-2,
-                -6px -6px 10px $white;
+                6px 6px 10px var(--neu-2),
+                -6px -6px 10px var(--white);
             transform: scale(.985);
             transition: .25s;
         }
@@ -120,8 +117,8 @@ body {
         &:active,
         &:focus {
             box-shadow:
-                2px 2px 6px $neu-2,
-                -2px -2px 6px $white;
+                2px 2px 6px var(--neu-2),
+                -2px -2px 6px var(--white);
             transform: scale(.97);
             transition: .25s;
         }
@@ -140,18 +137,18 @@ body {
         outline: none;
 
         font-family: 'Montserrat', sans-serif;
-        background-color: $neu-1;
+        background-color: var(--neu-1);
         transition: .25s ease;
         border-radius: 8px;
 
         box-shadow:
-            inset 2px 2px 4px $neu-2,
-            inset -2px -2px 4px $white;
+            inset 2px 2px 4px var(--neu-2),
+            inset -2px -2px 4px var(--white);
 
         &:focus {
             box-shadow:
-                inset 4px 4px 4px $neu-2,
-                inset -4px -4px 4px $white;
+                inset 4px 4px 4px var(--neu-2),
+                inset -4px -4px 4px var(--white);
         }
     }
 
@@ -161,10 +158,10 @@ body {
     }
 
     &__link {
-        color: $black;
+        color: var(--black);
         font-size: 15px;
         margin-top: 25px;
-        border-bottom: 1px solid $gray;
+        border-bottom: 1px solid var(--gray);
         line-height: 2;
     }
 }
@@ -173,7 +170,7 @@ body {
     font-size: 34px;
     font-weight: 700;
     line-height: 3;
-    color: $black;
+    color: var(--black);
 }
 
 .description {
@@ -192,11 +189,11 @@ body {
     font-size: 14px;
     letter-spacing: 1.15px;
 
-    background-color: $purple;
-    color: $white;
+    background-color: var(--red);
+    color: var(--white);
     box-shadow:
-        8px 8px 16px $neu-2,
-        -8px -8px 16px $white;
+        8px 8px 16px var(--neu-2),
+        -8px -8px 16px var(--white);
 
     border: none;
     outline: none;
@@ -227,15 +224,15 @@ body {
 
     padding: 50px;
     z-index: 200;
-    transition: $transition;
+    transition: var(--transition);
 
-    background-color: $neu-1;
+    background-color: var(--neu-1);
     overflow: hidden;
 
 
     box-shadow:
-        4px 4px 10px $neu-2,
-        -4px -4px 10px $white;
+        4px 4px 10px var(--neu-2),
+        -4px -4px 10px var(--white);
 
 
     &__logo {
@@ -245,6 +242,7 @@ body {
         display: block;
         margin-left: auto;
         margin-right: auto;
+        border-radius: 14px;
         cursor: pointer;
     }
 
@@ -253,14 +251,14 @@ body {
         width: 500px;
         height: 500px;
         border-radius: 50%;
-        background-color: $neu-1;
+        background-color: var(--neu-1);
         box-shadow:
-            inset 8px 8px 12px $neu-2,
-            inset -8px -8px 12px $white;
+            inset 8px 8px 12px var(--neu-2),
+            inset -8px -8px 12px var(--white);
 
         bottom: -60%;
         left: -60%;
-        transition: $transition;
+        transition: var(--transition);
 
         &--t {
             top: -30%;
@@ -279,7 +277,7 @@ body {
         width: 400px;
         padding: 50px 55px;
 
-        transition: $transition ;
+        transition: var(--transition) ;
 
     }
 
@@ -289,8 +287,8 @@ body {
 
         &:hover {
             box-shadow:
-                6px 6px 10px $neu-2,
-                -6px -6px 10px $white;
+                6px 6px 10px var(--neu-2),
+                -6px -6px 10px var(--white);
             transform: scale(.985);
             transition: .25s;
         }
@@ -298,8 +296,8 @@ body {
         &:active,
         &:focus {
             box-shadow:
-                2px 2px 6px $neu-2,
-                -2px -2px 6px $white;
+                2px 2px 6px var(--neu-2),
+                -2px -2px 6px var(--white);
             transform: scale(.97);
             transition: .25s;
         }
@@ -309,30 +307,30 @@ body {
 /**/
 .is-txr {
     left: calc(100% - 400px);
-    transition: $transition;
+    transition: var(--transition);
     transform-origin: left;
 }
 
 .is-txl {
     left: 0;
-    transition: $transition;
+    transition: var(--transition);
     transform-origin: right;
 }
 
 .is-z200 {
     z-index: 200;
-    transition: $transition;
+    transition: var(--transition);
 }
 
 .is-hidden {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    transition: $transition;
+    transition: var(--transition);
 }
 
 .is-gx {
-    animation: is-gx $transition;
+    animation: is-gx var(--transition);
 }
 
 @keyframes is-gx {
