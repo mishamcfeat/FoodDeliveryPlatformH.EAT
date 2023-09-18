@@ -29,15 +29,13 @@ const HomePage = () => {
             const imagePath = require(`../../assets/images/${restaurant.name}.jpg`);
 
             return (
-                <Link to={`/restaurant/${restaurant.id}`} key={restaurant.id}>
-                    <div className="app-card" key={restaurant.id}>
-                        <span>
-                            <img className="app-card-image" src={imagePath} alt={restaurant.name} />
-                        </span>
-                        <div className='text-container'>
-                            <div className="app-card__subtext">{restaurant.name}</div>
-                            <div className="app-card__microtext">{restaurant.address}</div>
-                        </div>
+                <Link to={`/restaurant/${restaurant.id}`} className="app-card" key={restaurant.id}>
+                    <span>
+                        <img className="app-card-image" src={imagePath} alt={restaurant.name} />
+                    </span>
+                    <div className='text-container'>
+                        <div className="app-card__subtext">{restaurant.name}</div>
+                        <div className="app-card__microtext">{restaurant.address}</div>
                     </div>
                 </Link>
             );
@@ -87,6 +85,16 @@ const HomePage = () => {
             });
         };
     }, []);
+
+    const appsCardRef = useRef(null);
+
+    const scroll = (direction) => {
+        const distance = 100; // You can adjust this value
+        if (appsCardRef.current) {
+            appsCardRef.current.scrollLeft += (distance * direction); // direction will be -1 for left and 1 for right
+        }
+    }
+
 
     return (
         <div className='home-page'>
@@ -181,7 +189,7 @@ const HomePage = () => {
                                     Pizza
                                 </a>
                                 <a className="main-header-link" href="#">
-                                    Wings
+                                    Coffee & Tea
                                 </a>
                                 <a className="main-header-link" href="#">
                                     Desserts
@@ -193,8 +201,14 @@ const HomePage = () => {
                         </div>
                         <div className="content-wrapper">
                             <div className="content-section">
-                                <div className="content-section-title">Fastest Delivery</div>
-                                <div className="apps-card">
+                                <div className="title-and-controls">
+                                    <div className="content-section-title">Fastest Delivery</div>
+                                    <div className="control-buttons">
+                                        <button id="scrollLeft" className="scroll-button" onClick={() => scroll(-1)}>←</button>
+                                        <button id="scrollRight" className="scroll-button" onClick={() => scroll(1)}>→</button>
+                                    </div>
+                                </div>
+                                <div className="apps-card" ref={appsCardRef}>
                                     {renderRestaurants()}
                                 </div>
                             </div>
