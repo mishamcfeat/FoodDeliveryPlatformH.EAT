@@ -48,8 +48,18 @@ const HomePage = () => {
 
     useEffect(() => {
 
+        const menuLinkNodes = menuLinks.current.querySelectorAll('.menu-link');
         const mainHeaderLinkNodes = mainHeaderLinks.current.querySelectorAll('.main-header-link');
         const handlers = [];
+
+        menuLinkNodes.forEach((link) => {
+            const handler = function () {
+                menuLinkNodes.forEach(lnk => lnk.classList.remove('is-active'));
+                this.classList.add('is-active');
+            };
+            link.addEventListener('click', handler);
+            handlers.push({ element: link, type: 'click', handler });
+        });
 
         mainHeaderLinkNodes.forEach((link) => {
             const handler = function () {
@@ -81,7 +91,7 @@ const HomePage = () => {
     const smoothScroll = (element, targetPosition, duration) => {
         let start = null;
         const startPosition = element.scrollLeft;
-    
+
         const step = timestamp => {
             if (!start) start = timestamp;
             const progress = Math.min((timestamp - start) / duration, 1);
@@ -90,24 +100,24 @@ const HomePage = () => {
                 window.requestAnimationFrame(step);
             }
         };
-    
+
         window.requestAnimationFrame(step);
     };
 
     const scroll = (direction) => {
-        if(appsCardRef.current && appsCardRef.current.children[0]) {
+        if (appsCardRef.current && appsCardRef.current.children[0]) {
             const cardWidth = appsCardRef.current.children[0].offsetWidth;
             const cardMargin = 20; // Your margin-right of 20px for .app-card
             const numberOfItemsToScroll = 1;  // Adjust this number as needed
             const distance = (cardWidth + cardMargin) * numberOfItemsToScroll;
-    
+
             // Call the smoothScroll function
             smoothScroll(appsCardRef.current, appsCardRef.current.scrollLeft + distance * direction, 300); // 300ms duration
         }
     };
 
     return (
-        <div className='home-page'>
+        <div className='restaurant-page'>
 
             <div className="app">
                 <div className="header">
@@ -169,45 +179,22 @@ const HomePage = () => {
                     </div>
                     <div className="main-container">
                         <div className="main-header">
-
+                            <h1>{restaurant.name}</h1>
                             <div className="header-menu" ref={mainHeaderLinks}>
-                                <a className="main-header-link is-active" href="#">
-                                    Chinese
-                                </a>
-                                <a className="main-header-link" href="#">
-                                    Indian
-                                </a>
-                                <a className="main-header-link" href="#">
-                                    East Asian
-                                </a>
-                                <a className="main-header-link" href="#">
-                                    Wings
-                                </a>
-                                <a className="main-header-link" href="#">
-                                    Pizza
-                                </a>
-                                <a className="main-header-link" href="#">
-                                    Coffee & Tea
-                                </a>
-                                <a className="main-header-link" href="#">
-                                    Desserts
-                                </a>
-                                <a className="main-header-link" href="#">
-                                    Alcohol
-                                </a>
+                                {imagePath && <img className="restaurant-image" src={imagePath} alt="Restaurant Main Image" />}
                             </div>
                         </div>
                         <div className="content-wrapper">
                             <div className="content-section">
                                 <div className="title-and-controls">
-                                    <div className="content-section-title">Fastest Delivery</div>
+                                    <div className="content-section-title">Menu Items</div>
                                     <div className="control-buttons">
                                         <button id="scrollLeft" className="scroll-button" onClick={() => scroll(-1)}>←</button>
                                         <button id="scrollRight" className="scroll-button" onClick={() => scroll(1)}>→</button>
                                     </div>
                                 </div>
-                                <div className="apps-card" ref={appsCardRef}>
-                                    {renderRestaurants()}
+                                <div className="menu-items-container">
+                                    {renderMenuItems()}
                                 </div>
                             </div>
                         </div>
@@ -215,8 +202,9 @@ const HomePage = () => {
                 </div>
 
             </div>
-        </div>
+        </div >
     );
 }
 
 export default HomePage;
+

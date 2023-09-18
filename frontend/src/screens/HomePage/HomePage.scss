@@ -1,6 +1,4 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
 
 * .home-page {
     outline: none;
@@ -312,7 +310,7 @@ body .home-page {
     font-size: 11px;
 }
 
-.main-header {
+.home-page .main-header {
     background-color: var(--theme-bg-main-header);
     box-shadow:
         19px 19px 38px #12131b,
@@ -457,87 +455,90 @@ body .home-page {
     }
 }
 
-.apps-card {
+.home-page .apps-card {
     display: flex;
     align-items: center;
-    width: calc(120%);
+    width: calc(100%);
     overflow-x: auto;
-}
+    white-space: nowrap;
+    scroll-behavior: smooth;
 
-.app-card {
-    text-decoration: none;
-    color: inherit;
-    display: inline-flex;
-    flex-direction: column;
-    width: calc(150%);
-    height: 200px;
-    font-size: 16px;
-    border-radius: 14px;
-    padding: 0;
-    cursor: pointer;
-    transition: 0.1s ease;
-    margin-right: 20px;
-    margin-bottom: 20px;
-
-
-    span {
-        display: flex;
-        align-items: center;
-        position: relative;
-        height: 70%; // to ensure the span takes the full height of its container
-
-        .app-card-image {
-            width: 100%; // fills the width
-            max-height: 100%; // 2/3 of the container height
-            object-fit: cover; // ensure the image scales correctly
-            display: block; // to remove any unwanted space below the image
-            border-radius: 14px;
-        }
-    }
-
-    .text-container {
-        display: flex;
+    .app-card {
+        text-decoration: none;
+        color: inherit;
+        display: inline-flex;
+        flex: 0 0 auto;
         flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        padding: 8px; /* You can adjust this padding */
-        height: 33.33%; /* This will ensure the text takes the remaining 1/3 space */
-        font-weight: 400;
-        margin-left: 0px;
-    }
+        width: calc(20%);
+        height: 200px;
+        font-size: 16px;
+        border-radius: 14px;
+        padding: 0;
+        cursor: pointer;
+        transition: 0.1s ease;
+        margin-right: 20px;
+        margin-bottom: 20px;
 
-    &__subtext {
-        font-size: 14px;
-        line-height: 0.8em;
-        padding-bottom: 9px;
-    }
+        span {
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 70%;
 
-    &__microtext {
-        font-size: 11px;
-        line-height: 0.8em;
-        margin-top: 1px;
-    }
-
-    &:hover {
-        transform: scale(1.02);
-        background-color: var(--theme-bg-color);
-    }
-
-    @media screen and (max-width: 1110px) {
-        width: 250px; // Adjust width for this breakpoint
-
-        &:last-child {
-            margin-top: 20px;
-            margin-right: 0;
+            .app-card-image {
+                width: 100%;
+                max-height: 100%;
+                object-fit: cover;
+                display: block;
+                border-radius: 14px;
+            }
         }
-    }
 
-    @media screen and (max-width: 565px) {
-        width: 100%; // Adjust width for this breakpoint
-        margin-top: 20px;
+        .text-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 8px; /* You can adjust this padding */
+            height: 33.33%; /* This will ensure the text takes the remaining 1/3 space */
+            font-weight: 400;
+            margin-left: 0px;
 
-        & + .app-card {
-            margin-right: 0;
+            .subtext {
+                font-size: 16px;
+                line-height: 0.8em;
+                padding-bottom: 8px;
+            }
+
+            .microtext {
+                font-size: 12px;
+                margin-left: 1px;
+                line-height: 0.8em;
+                margin-top: 1px;
+            }
+        }
+
+        &:hover {
+            transform: scale(1.02);
+            background-color: var(--theme-bg-color);
+        }
+
+        @media screen and (max-width: 1110px) {
+            width: 250px; // Adjust width for this breakpoint
+
+            &:last-child {
+                margin-top: 20px;
+                margin-right: 0;
+            }
+        }
+
+        @media screen and (max-width: 565px) {
+            width: 100%; // Adjust width for this breakpoint
+            margin-top: 20px;
+
+            & + .app-card {
+                margin-right: 0;
+            }
         }
     }
 }
