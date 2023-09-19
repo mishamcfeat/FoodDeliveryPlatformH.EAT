@@ -4,16 +4,17 @@ import { Link } from 'react-router-dom';
 import './HomePage.scss';
 import logo from '../../assets/images/HEAT-logo.jpeg';
 
-
+axios.defaults.withCredentials = true;
 const HomePage = () => {
 
+    const BASE_URL = 'http://localhost:8000';
     const [restaurants, setRestaurants] = useState([]);
 
 
     useEffect(() => {
 
         // Fetch the restaurants data from your FastAPI backend
-        axios.get('http://localhost:8000/restaurants/list_restaurants/')
+        axios.get(`${BASE_URL}/restaurants/list_restaurants/`)
             .then(response => {
                 setRestaurants(response.data.restaurants);
                 console.log(response.data.restaurants);
@@ -26,7 +27,8 @@ const HomePage = () => {
     // Render the restaurants:
     const renderRestaurants = () => {
         return restaurants.map(restaurant => {
-            const imagePath = require(`../../assets/images/${restaurant.name}.jpg`);
+            const sanitizedRestaurantName = restaurant.name.replace(/ /g, ''); // Replace spaces with an empty string
+            const imagePath = require(`../../assets/images/${sanitizedRestaurantName}/${restaurant.name}.jpg`);
 
             return (
                 <Link to={`/restaurant/${restaurant.id}`} className="app-card" key={restaurant.id}>
@@ -42,7 +44,6 @@ const HomePage = () => {
         });
     };
 
-    const menuLinks = useRef(null);
     const mainHeaderLinks = useRef(null);
     const searchBarInput = useRef(null);
 

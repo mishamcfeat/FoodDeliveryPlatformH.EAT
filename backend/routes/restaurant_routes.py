@@ -87,11 +87,20 @@ async def add_menu_item(restaurant_id: int, item: RestaurantItemBase, db: Sessio
     
     return {"message": "Menu item added", "item_id": db_menu_item.id}
 
-
+@router.get("/{restaurant_id}/menu/{item_id}/")
+async def get_menu_item(restaurant_id: int, item_id: int, db: Session = Depends(get_db)):
+    item = db.query(RestaurantItem).filter(RestaurantItem.id == item_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item id not found")
+    return {"item": item.__dict__}
+    
+    
 @router.put("/{restaurant_id}/menu/{item_id}/")
 async def update_menu_item(restaurant_id: int, item_id: int, item: RestaurantItemUpdate, db: Session = Depends(get_db)):
     # Logic to update a menu item for a restaurant
     item = db.query(RestaurantItem).filter(RestaurantItem.id == item_id).update(item.model_dump(exclude_unset=True))
+    if not item:
+        raise HTTPException(status_code=404, detail="Item id not found")
     db.commit()
     return {"message": "Menu item updated"}
 

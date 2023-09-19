@@ -23,12 +23,12 @@
     --white: #f9f9f9;
 }
 
-html .restaurant-page {
+html .additem {
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
 }
 
-body .restaurant-page {
+body .res {
     font-family: var(--body-font);
     background-image: url("../../assets/images/noodles.jpg");
     background-size: cover;
@@ -64,7 +64,7 @@ body .restaurant-page {
     font-weight: 500;
 }
 
-.header {
+.additem .header {
     display: flex;
     align-items: center;
     flex-shrink: 0;
@@ -174,22 +174,6 @@ body .restaurant-page {
     }
 }
 
-.menu-circle {
-    width: 15px;
-    height: 15px;
-    background-color: #f96057;
-    border-radius: 50%;
-    box-shadow:
-        24px 0 0 0 #f8ce52,
-        48px 0 0 0 #5fcf65;
-    margin-right: 195px;
-    flex-shrink: 0;
-
-    @media screen and (max-width: 945px) {
-        display: none;
-    }
-}
-
 .search-bar {
     height: 40px;
     display: flex;
@@ -251,113 +235,6 @@ body .restaurant-page {
     overflow: hidden;
 }
 
-.left-side {
-    flex-basis: 240px;
-    border-right: 1px solid var(--border-color);
-    padding: 26px;
-    overflow: auto;
-    flex-shrink: 0;
-
-    @media screen and (max-width: 945px) {
-        display: none;
-    }
-}
-
-.side-wrapper + .side-wrapper {
-    margin-top: 20px;
-}
-
-.side-title {
-    margin-top: 20px;
-    color: var(--inactive-color);
-    margin-bottom: 14px;
-}
-
-.side-menu {
-    display: flex;
-    flex-direction: column;
-    white-space: nowrap;
-
-    a {
-        text-decoration: none;
-        color: var(--theme-color);
-        display: flex;
-        align-items: center;
-        font-weight: 400;
-        padding: 10px;
-        font-size: 14px;
-        border-radius: 6px;
-        transition: 0.3s;
-
-        &:hover {
-            background-color: var(--hover-menu-bg);
-        }
-    }
-
-    svg {
-        width: 16px;
-        margin-right: 8px;
-    }
-}
-
-.updates {
-    position: relative;
-    top: 0;
-    right: 0;
-    margin-left: auto;
-    width: 18px;
-    height: 18px;
-    font-size: 11px;
-}
-
-.restaurant-page .main-header {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid var(--border-color);
-    height: 250px;
-    flex-shrink: 0;
-
-    .header-menu {
-        flex-grow: 1; /* This will make it take the remaining space */
-        display: flex; /* This ensures the image stretches in this container */
-        align-items: center; /* Vertically center the image */
-        justify-content: center; /* Horizontally center the image */
-        margin-left: 0px;
-        width: 100%;
-        height: 100%;
-
-        img.restaurant-image {
-            width: 100%; /* Full width of the header-menu */
-            height: 100%; /* Full height of the header-menu */
-            object-fit: cover; /* Image will cover the available space without distorting */
-        }
-
-        @media screen and (max-width: 1055px) {
-            margin: auto;
-        }
-
-        a {
-            padding: 20px 24px;
-        }
-    }
-}
-
-.main-container {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
-
-.menu-link-main {
-    text-decoration: none;
-    color: var(--theme-color);
-    padding: 0 30px;
-
-    @media screen and (max-width: 1055px) {
-        display: none;
-    }
-}
-
 .content-wrapper {
     box-shadow:
         inset 19px 19px 38px #0b0c12,
@@ -381,38 +258,6 @@ body .restaurant-page {
     display: flex;
     align-items: center;
     margin: 0;
-}
-
-.content-wrapper-context {
-    max-width: 350px;
-}
-
-.content-wrapper-img {
-    width: 186px;
-    object-fit: cover;
-    margin-top: -25px;
-    object-position: center;
-
-    @media screen and (max-width: 570px) {
-        width: 110px;
-    }
-}
-
-.products {
-    display: flex;
-    align-items: center;
-    width: 150px;
-
-    @media screen and (max-width: 480px) {
-        width: 120px;
-    }
-}
-
-.menu {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    margin: 0 12px;
 }
 
 .content-section .close {
@@ -463,89 +308,92 @@ body .restaurant-page {
     }
 }
 
-.restaurant-page .apps-card {
+.additem-page .wrapper {
     display: flex;
+    justify-content: center;
     align-items: center;
-    width: calc(100%);
-    overflow-x: auto;
-    white-space: nowrap;
-    scroll-behavior: smooth;
+    width: 100%;
+    height: 100vh; // Assuming you want it to occupy the full viewport height
 
-    .menu-card {
-        text-decoration: none;
-        color: inherit;
-        display: inline-flex;
-        flex: 0 0 auto;
-        flex-direction: column;
-        width: calc(30%);
-        height: 200px;
-        font-size: 16px;
-        border-radius: 14px;
-        padding: 0;
-        cursor: pointer;
-        transition: 0.1s ease;
-        margin-right: 20px;
-        margin-bottom: 20px;
+    .add-item-container {
+        width: 80%; // Adjust as required
+        max-width: 1200px; // Adjust as required
+        border: 1px solid #ccc; // Optional, just to visualize the boundary
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); // Optional shadow for aesthetics
+        border: none;
 
-        span {
-            display: flex;
-            align-items: center;
-            position: relative;
-            height: 70%;
-
-            .app-card-image {
-                width: 100%;
-                max-height: 100%;
-                object-fit: cover;
-                display: block;
-                border-radius: 14px;
-            }
+        .content-section-title {
+            text-align: center;
+            font-size: 24px; // Adjust as needed
+            margin-bottom: 20px;
+            margin-right: 80%;
+            font-weight: bold;
         }
 
-        .text-container {
+        .content-section {
             display: flex;
-            flex-direction: column;
             justify-content: center;
-            align-items: flex-start;
-            padding: 8px; /* You can adjust this padding */
-            height: 33.33%; /* This will ensure the text takes the remaining 1/3 space */
-            font-weight: 400;
-            margin-left: 0px;
+            align-items: center;
 
-            .subtext {
-                font-size: 16px;
-                line-height: 0.8em;
-                padding-bottom: 8px;
-            }
+            .items-card {
+                width: 100%;
 
-            .microtext {
-                font-size: 12px;
-                margin-left: 1px;
-                line-height: 0.8em;
-                margin-top: 1px;
-            }
-        }
+                .item-card {
+                    display: flex;
 
-        &:hover {
-            transform: scale(1.02);
-            background-color: var(--theme-bg-color);
-        }
+                    .item-card-image {
+                        flex: 0 0 50%; // Takes up 50% width
+                        max-width: 60%; // Responsive
+                        height: auto; // Maintain aspect ratio
+                    }
 
-        @media screen and (max-width: 1110px) {
-            width: 250px; // Adjust width for this breakpoint
+                    .text-container {
+                        flex: 1; // Takes up the remaining 50%
+                        display: flex; // Add this
+                        flex-direction: column; // Add this
+                        padding: 0 20px; // Give some spacing from the image
+                        color: white;
 
-            &:last-child {
-                margin-top: 20px;
-                margin-right: 0;
-            }
-        }
+                        .subtext {
+                            font-size: 24px; // Adjust as needed
+                            font-weight: bold;
+                        }
 
-        @media screen and (max-width: 565px) {
-            width: 100%; // Adjust width for this breakpoint
-            margin-top: 20px;
+                        .microtext {
+                            font-size: 18px; // Adjust as needed
+                            margin-top: 10px; // Spacing from the title
+                        }
 
-            & + .app-card {
-                margin-right: 0;
+                        .description {
+                            font-size: 14px; // Adjust as needed
+                            margin-top: 15px; // Spacing from the price
+                            color: rgb(213, 213, 213); // Maybe a subtle color for the description
+                        }
+
+                        .addbutton {
+                            background-color: rgb(16, 18, 27);
+                            color: white;
+                            margin-top: auto;
+                            width: 100%;
+                            height: 10%;
+                        }
+                        .quantity-select-container {
+                            display: flex;
+                            align-items: center;
+                            margin-bottom: 10px; // Spacing between dropdown and the button
+                        
+                            label {
+                                margin-right: 10px;
+                            }
+                        
+                            select {
+                                padding: 5px;
+                                font-size: 14px;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -560,4 +408,3 @@ body .restaurant-page {
     background: var(--scrollbar-bg);
     border-radius: 10px;
 }
-

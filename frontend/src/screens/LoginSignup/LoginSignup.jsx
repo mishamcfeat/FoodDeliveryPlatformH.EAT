@@ -16,7 +16,7 @@ const LoginSignup = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const BASE_URL = 'http://localhost:8000/users';
+    const BASE_URL = 'http://localhost:8000';
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -29,10 +29,10 @@ const LoginSignup = () => {
             return;
         }
 
-        const endpoint = isLogin ? '/login/' : '/register/';
+        const endpoint = isLogin ? 'login/' : 'register/';
         const data = isLogin ? { email, password } : { username, email, password };
 
-        axios.post(`${BASE_URL}${endpoint}`, data)
+        axios.post(`${BASE_URL}/users/${endpoint}`, data)
             .then(res => {
                 console.log(res);
                 setUsername('');  // Clear the input fields after successful action

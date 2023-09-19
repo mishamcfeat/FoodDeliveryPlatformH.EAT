@@ -51,27 +51,29 @@ const RestaurantPage = () => {
             });
     }, [restaurantId]);
 
-    const imagePath = restaurant.name ? require(`../../assets/images/${restaurant.name}.jpg`) : null;
-
-    
+    const sanitizedRestaurantName = restaurant && restaurant.name ? restaurant.name.replace(/ /g, '') : '';
+    const imagePath = sanitizedRestaurantName ? require(`../../assets/images/${sanitizedRestaurantName}/${restaurant.name}.jpg`) : null;
 
     const renderMenuItems = () => {
+
         return menu.map(item => {
+            const itemPath = require(`../../assets/images/${sanitizedRestaurantName}/menu-items/${item.name}.jpg`)
 
             return (
-                <div className="menu-card" key={item.id}>
+                <Link to={`/restaurant/${restaurant.id}/menu/${item.id}`} className="menu-card" key={item.id}>
                     <span>
-                        <img className="app-card-image" src={imagePath} alt={restaurant.name} />
+                        <img className="app-card-image" src={itemPath} alt={restaurant.name} />
                     </span>
                     <div className="text-container">
                         <div className="subtext">{item.name}</div>
                         <div className="microtext">Price: ${item.price.toFixed(2)}</div>
                     </div>
-                </div>
+                </Link>
             );
 
         });
     };
+
     const appsCardRef = useRef(null);
 
     const smoothScroll = (element, targetPosition, duration) => {

@@ -25,7 +25,7 @@ async def initiate_order(init: OrderInit, db: Session = Depends(get_db), user: i
     db_order = Order(
         user_id=current_user.id,
         restaurant_id=init.restaurant_id,
-        delivery_address=init.delivery_address,
+        delivery_address=current_user.delivery_address,
         total_amount=0,
         status="In Progress"
     )

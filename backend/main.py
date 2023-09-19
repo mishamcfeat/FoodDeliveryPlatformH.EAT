@@ -4,10 +4,7 @@ from routes import user_routes, order_routes, restaurant_routes
 
 app = FastAPI()
 
-origins = [
-    "http://localhost:3000",  # Assuming your React frontend runs on this origin
-    # Add any other origins you might want to allow in the future
-]
+origins = ["http://localhost:3000", "http://localhost:8000"]
 
 app.add_middleware(
     CORSMiddleware,

@@ -14,6 +14,8 @@ class User(Base):
     password = Column(String(200))
     address = Column(String(300), index=True)
     phone_number = Column(String(20), unique=True, index=True)
+    scopes = Column(String, default="read:profile")
+
 
 
 class Restaurant(Base):
