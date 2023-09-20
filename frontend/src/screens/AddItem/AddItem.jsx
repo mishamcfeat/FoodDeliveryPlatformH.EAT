@@ -58,16 +58,11 @@ const AddItem = () => {
         try {
             const response = await axios.post(`${BASE_URL_ORDERS}/initiate_order/`, {
                 restaurant_id: restaurantId,
-                delivery_address: deliveryAddress
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                delivery_address: deliveryAddress  // You can get this from the user's state or context
             });
             return response.data.order_id;
         } catch (error) {
             console.error("Error initiating order:", error);
-            // Handle this error in the UI if required
             return null;
         }
     };
@@ -82,14 +77,13 @@ const AddItem = () => {
             console.log("Item added successfully");
         } catch (error) {
             console.error("Error adding item to order:", error);
-            // Handle this error in the UI if required
         }
     };
 
     const handleAddToOrder = async () => {
-        const orderId = await initiateOrder(restaurant.id);  // user.address Assuming you have 'restaurant' and 'user' objects available
+        const orderId = await initiateOrder(restaurant.id);
         if (orderId) {
-            await addItemToOrder(orderId, menuItem, menuItem.price);  // Assuming menuItem.price is the current price
+            await addItemToOrder(orderId, menuItem, menuItem.price);
         }
     };
 
@@ -140,7 +134,9 @@ const AddItem = () => {
 
                 <div className="app">
                     <div className="header">
-                        <img className="header-logo" src={logo} alt="" />
+                        <Link to="/">
+                            <img className="header-logo" src={logo} alt="" />
+                        </Link>
                         <div className="search-bar">
                             <input ref={searchBarInput} type="text" placeholder="Search" />
                         </div>

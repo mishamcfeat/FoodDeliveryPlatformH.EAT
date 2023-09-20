@@ -110,7 +110,9 @@ const RestaurantPage = () => {
 
             <div className="app">
                 <div className="header">
-                    <img className="header-logo" src={logo} alt="" />
+                    <Link to="/">
+                        <img className="header-logo" src={logo} alt="" />
+                    </Link>
                     <div className="search-bar">
                         <input ref={searchBarInput} type="text" placeholder="Search" />
                     </div>
