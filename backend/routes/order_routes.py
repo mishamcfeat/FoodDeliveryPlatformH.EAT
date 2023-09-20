@@ -15,9 +15,22 @@ router = APIRouter()
 
 
 @router.post("/initiate_order/")
-async def initiate_order(init: OrderInit, db: Session = Depends(get_db), user: int = Depends(get_current_user)):
+async def initiate_order(init: OrderInit, db: Session = Depends(get_db), user: dict = Depends(get_current_user)):
     
-    current_user = db.query(User).filter(User.id == user).first()
+    current_user = db.query(User).filter(User.id == user["user_id"]).first()
+    
+    # Check for an existing 'In Progress' order for the user (and restaurant if required)
+    existing_order = db.query(Order).filter(
+        Order.user_id == current_user.id, 
+        Order.status == "In Progress"
+        # If you want to also check per restaurant, add:
+        #, Order.restaurant_id == init.restaurant_id
+    ).first()
+    
+    if existing_order:
+        # Handle adding items to this existing order, as per your logic. 
+        # (You may need to adjust this based on how you manage order items)
+        return {"order_id": existing_order.order_id}
     
     if not init.delivery_address:
         init.delivery_address = current_user.address
@@ -25,7 +38,7 @@ async def initiate_order(init: OrderInit, db: Session = Depends(get_db), user: i
     db_order = Order(
         user_id=current_user.id,
         restaurant_id=init.restaurant_id,
-        delivery_address=current_user.delivery_address,
+        delivery_address=init.delivery_address,
         total_amount=0,
         status="In Progress"
     )

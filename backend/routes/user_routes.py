@@ -38,7 +38,7 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
     hashed_password = bcrypt.hashpw(user.password.encode(
         'utf-8'), bcrypt.gensalt()).decode('utf-8')
     db_user = User(username=user.username, email=user.email,
-                   password=hashed_password)
+                   password=hashed_password, address = user.address)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -57,8 +57,12 @@ async def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
         # Token lasts for 30 minutes before re-verification is needed
         expiration = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
         # Create a token (algo = header, username = payload, jwt.encode = signature)
-        token = jwt.encode({"sub": db_user.id, "exp": expiration},
-                           "private_key", algorithm="HS256")
+        token_data = {
+            "sub": db_user.id,
+            "exp": expiration,
+            "scopes": db_user.scopes
+        }
+        token = jwt.encode(token_data, "private_key", algorithm="HS256")
         # Create a response object
         content = {"token": token}
         response = JSONResponse(content=content)
@@ -89,11 +93,12 @@ def get_current_user(request: Request):
     try:
         payload = jwt.decode(token, "private_key", algorithms=['HS256'])
         user_id: int = payload.get("sub")
+        user_scopes: str = payload.get("scopes", "")
         if user_id is None:
             raise credentials_exception
     except Exception:
         raise credentials_exception
-    return user_id
+    return {"user_id": user_id, "scopes": user_scopes.split()}
 
 
 @router.put("/profile/{user_id}/")

@@ -51,12 +51,18 @@ const AddItem = () => {
 
     const BASE_URL_ORDERS = 'http://localhost:8000/orders';
     const [selectedQuantity, setSelectedQuantity] = useState(1);
+    const token = localStorage.getItem("jwt_token");
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
     const initiateOrder = async (restaurantId, deliveryAddress) => {
         try {
             const response = await axios.post(`${BASE_URL_ORDERS}/initiate_order/`, {
                 restaurant_id: restaurantId,
-                delivery_address: deliveryAddress  // You can get this from the user's state or context
+                delivery_address: deliveryAddress
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
             return response.data.order_id;
         } catch (error) {
