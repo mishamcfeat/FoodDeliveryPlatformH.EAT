@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import './AddItem.scss';
 import logo from '../../assets/images/HEAT-logo.jpeg';  // adjust as necessary
+import { useAuth } from '../../AuthContext';
+
 
 const AddItem = () => {
 
@@ -49,6 +51,11 @@ const AddItem = () => {
             });
     }, [restaurantId]);
 
+    const navigate = useNavigate();
+    const handleBackClick = () => {
+        navigate(-1);
+    };
+
     const BASE_URL_ORDERS = 'http://localhost:8000/orders';
     const [selectedQuantity, setSelectedQuantity] = useState(1);
     const token = localStorage.getItem("jwt_token");
@@ -87,9 +94,6 @@ const AddItem = () => {
         }
     };
 
-
-
-
     const renderMenuItem = () => {
         if (menuItem) {
             const sanitizedRestaurantName = restaurant.name ? restaurant.name.replace(/ /g, '') : '';
@@ -126,7 +130,7 @@ const AddItem = () => {
         }
     };
 
-
+    const { user } = useAuth();
 
     return (
         <div className='restaurant-page'>
@@ -140,16 +144,24 @@ const AddItem = () => {
                         <div className="search-bar">
                             <input ref={searchBarInput} type="text" placeholder="Search" />
                         </div>
-                        <div className='buttons__both'>
-                            <Link to="/login-signup">
-                                <button className="buttons__login" >LOG IN</button>
-                                <button className="buttons__signup" >SIGN UP</button>
-                            </Link>
-                        </div>
+                        <div className="buttons__both">
+                        {
+                            user ?
+                                <button className="user-name-button">{user.username}</button> :
+                                <Link to="/login-signup">
+                                    <button className="buttons__login">LOG IN</button>
+                                    <button className="buttons__signup">SIGN UP</button>
+                                </Link>
+                        }
+                    </div>
                     </div>
                     <div className="wrapper">
                         <div className="add-item-container">
-                            <div className="content-section-title">{restaurant.name}</div>
+                            <div className="content-section-title">
+                                <button className="back-button" onClick={handleBackClick}>
+                                    &#8592; Back to {restaurant.name}
+                                </button>
+                            </div>
                             <div className="content-section">
                                 <div className="items-card">
                                     {renderMenuItem()}

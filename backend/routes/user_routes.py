@@ -38,7 +38,7 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
     hashed_password = bcrypt.hashpw(user.password.encode(
         'utf-8'), bcrypt.gensalt()).decode('utf-8')
     db_user = User(username=user.username, email=user.email,
-                   password=hashed_password, address = user.address)
+                   password=hashed_password, address=user.address)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -99,6 +99,23 @@ def get_current_user(request: Request):
     except Exception:
         raise credentials_exception
     return {"user_id": user_id, "scopes": user_scopes.split()}
+
+
+@router.get("/profile/{user_email}/")
+async def get_profile_by_email(user_email: str, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    user_details = db.query(User).filter(User.email == user_email).first()
+
+    if not user_details:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Check if the user_id from JWT matches the user_id fetched using email
+    if user_details.id != current_user["user_id"]:
+        raise HTTPException(status_code=403, detail="Access Denied")
+
+    exclude_fields = {"password", "_sa_instance_state"}
+    user_dict = {k: v for k, v in user_details.__dict__.items() if k not in exclude_fields}
+
+    return {"user": user_dict}
 
 
 @router.put("/profile/{user_id}/")

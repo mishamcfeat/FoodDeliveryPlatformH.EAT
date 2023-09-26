@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './LoginSignup.scss';
 import { Helmet } from 'react-helmet';
-
+import { AuthContext } from '../../AuthContext';
 
 import facebook from '../../assets/images/facebook.jpeg';
 import linkedin from '../../assets/images/linkedin.jpeg';
@@ -12,11 +12,14 @@ import logo from '../../assets/images/HEAT-logo.jpeg';
 
 const LoginSignup = () => {
 
+    const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(false);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const BASE_URL = 'http://localhost:8000';
+    const BASE_URL_USERS = 'http://localhost:8000/users';
+
+    const { setUser } = useContext(AuthContext);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -32,12 +35,28 @@ const LoginSignup = () => {
         const endpoint = isLogin ? 'login/' : 'register/';
         const data = isLogin ? { email, password } : { username, email, password };
 
-        axios.post(`${BASE_URL}/users/${endpoint}`, data)
+        axios.post(`${BASE_URL_USERS}/${endpoint}`, data)
             .then(res => {
                 console.log(res);
-                setUsername('');  // Clear the input fields after successful action
+
+                // Set user's name after successful login or sign-up
+                return axios.get(`${BASE_URL_USERS}/profile/${data.email}/`);
+            })
+            .then(res => {
+                console.log(res);
+    
+                // Set user's details after successful retrieval
+                if (res.data && res.data.user) {
+                    setUser(res.data.user); // Assuming user contains all the user details you need
+                }
+    
+                // Clear the input fields
+                setUsername('');
                 setEmail('');
                 setPassword('');
+    
+                // Navigate back to the homepage
+                navigate('/');
             })
             .catch(err => {
                 console.error("An error occurred:", err);
@@ -131,9 +150,9 @@ const LoginSignup = () => {
                             <img className="form__icon" src={twitter} alt="" />
                         </div>
                         <span className="form__span">or use email for registration</span>
-                        <input className="form__input" type="text" placeholder="Name" value={username} onChange={e => setUsername(e.target.value)}/>
-                        <input className="form__input" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
-                        <input className="form__input" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}/>
+                        <input className="form__input" type="text" placeholder="Name" value={username} onChange={e => setUsername(e.target.value)} />
+                        <input className="form__input" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+                        <input className="form__input" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
                         <button className="form__button button submit" onClick={handleSubmit} >SIGN UP</button>
                     </form>
                 </div>
@@ -147,8 +166,8 @@ const LoginSignup = () => {
                             <img className="form__icon" src={twitter} alt="" />
                         </div>
                         <span className="form__span">or use your email account</span>
-                        <input className="form__input" type="text" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
-                        <input className="form__input" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}/>
+                        <input className="form__input" type="text" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+                        <input className="form__input" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
                         <a className="form__link">Forgot your password?</a>
                         <button className="form__button button submit" onClick={handleSubmit} >LOG IN</button>
                     </form>
@@ -159,7 +178,7 @@ const LoginSignup = () => {
                     <div className="switch__circle switch__circle--t"></div>
                     <div className="switch__container" id="switch-c1" ref={switchC1}>
                         <Link to="/">
-                        <img className="switch__logo" src={logo} alt="" />
+                            <img className="switch__logo" src={logo} alt="" />
                         </Link>
                         <h2 className="switch__title title">Sign up Now!</h2>
                         <p className="switch__description description">Please enter your personal details to order your food at the touch of a button</p>
@@ -167,7 +186,7 @@ const LoginSignup = () => {
                     </div>
                     <div className="switch__container is-hidden" id="switch-c2" ref={switchC2}>
                         <Link to="/">
-                        <img className="switch__logo" src={logo} alt="" />
+                            <img className="switch__logo" src={logo} alt="" />
                         </Link>
                         <h2 className="switch__title title"> Welcome back</h2>
                         <p className="switch__description description">Craving Food? Enter your personal details and find the best restaurants that deliver</p>

@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './HomePage.scss';
 import logo from '../../assets/images/HEAT-logo.jpeg';
+import { useAuth } from '../../AuthContext';
+
 
 axios.defaults.withCredentials = true;
 const HomePage = () => {
@@ -82,7 +84,7 @@ const HomePage = () => {
     const smoothScroll = (element, targetPosition, duration) => {
         let start = null;
         const startPosition = element.scrollLeft;
-    
+
         const step = timestamp => {
             if (!start) start = timestamp;
             const progress = Math.min((timestamp - start) / duration, 1);
@@ -91,36 +93,42 @@ const HomePage = () => {
                 window.requestAnimationFrame(step);
             }
         };
-    
+
         window.requestAnimationFrame(step);
     };
 
     const scroll = (direction) => {
-        if(appsCardRef.current && appsCardRef.current.children[0]) {
-            const cardWidth = appsCardRef.current.children[0].offsetWidth;
-            const cardMargin = 20; // Your margin-right of 20px for .app-card
-            const numberOfItemsToScroll = 1;  // Adjust this number as needed
-            const distance = (cardWidth + cardMargin) * numberOfItemsToScroll;
-    
+        if (appsCardRef.current && appsCardRef.current.children[0]) {
+            const cardWidth = appsCardRef.current.children[0].offsetWidth; // uses the width of the card
+            const cardMargin = 20; // + margin-right of 20px for .app-card
+            const numberOfItemsToScroll = 1;  // scrolls one item at a time
+            const distance = (cardWidth + cardMargin) * numberOfItemsToScroll; // calculates the scrolling distance
+
             // Call the smoothScroll function
-            smoothScroll(appsCardRef.current, appsCardRef.current.scrollLeft + distance * direction, 300); // 300ms duration
+            smoothScroll(appsCardRef.current, appsCardRef.current.scrollLeft + distance * direction, 300); // 300ms duration of scrolling
         }
     };
+
+    const { user } = useAuth();
 
     return (
         <div className='home-page'>
 
             <div className="app">
                 <div className="header">
-                    <img className="header-logo" src={logo} alt="" />
+                    <img className="header-logo" src={logo} />
                     <div className="search-bar">
                         <input ref={searchBarInput} type="text" placeholder="Search" />
                     </div>
-                    <div className='buttons__both'>
-                        <Link to="/login-signup">
-                            <button className="buttons__login" >LOG IN</button>
-                            <button className="buttons__signup" >SIGN UP</button>
-                        </Link>
+                    <div className="buttons__both">
+                        {
+                            user ?
+                                <button className="user-name-button">{user.username}</button> :
+                                <Link to="/login-signup">
+                                    <button className="buttons__login">LOG IN</button>
+                                    <button className="buttons__signup">SIGN UP</button>
+                                </Link>
+                        }
                     </div>
                 </div>
                 <div className="wrapper">
@@ -173,6 +181,9 @@ const HomePage = () => {
 
                             <div className="header-menu" ref={mainHeaderLinks}>
                                 <a className="main-header-link is-active" href="#">
+                                    All
+                                </a>
+                                <a className="main-header-link" href="#">
                                     Chinese
                                 </a>
                                 <a className="main-header-link" href="#">
@@ -193,9 +204,7 @@ const HomePage = () => {
                                 <a className="main-header-link" href="#">
                                     Desserts
                                 </a>
-                                <a className="main-header-link" href="#">
-                                    Alcohol
-                                </a>
+
                             </div>
                         </div>
                         <div className="content-wrapper">

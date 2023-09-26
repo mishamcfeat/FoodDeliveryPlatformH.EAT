@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import './RestaurantPage.scss';
 import logo from '../../assets/images/HEAT-logo.jpeg';  // adjust as necessary
+import { useAuth } from '../../AuthContext';
+
 
 const RestaurantPage = () => {
 
@@ -104,6 +106,7 @@ const RestaurantPage = () => {
         }
     };
 
+    const { user } = useAuth();
 
     return (
         <div className='restaurant-page'>
@@ -116,11 +119,15 @@ const RestaurantPage = () => {
                     <div className="search-bar">
                         <input ref={searchBarInput} type="text" placeholder="Search" />
                     </div>
-                    <div className='buttons__both'>
-                        <Link to="/login-signup">
-                            <button className="buttons__login" >LOG IN</button>
-                            <button className="buttons__signup" >SIGN UP</button>
-                        </Link>
+                    <div className="buttons__both">
+                        {
+                            user ?
+                                <button className="user-name-button">{user.username}</button> :
+                                <Link to="/login-signup">
+                                    <button className="buttons__login">LOG IN</button>
+                                    <button className="buttons__signup">SIGN UP</button>
+                                </Link>
+                        }
                     </div>
                 </div>
                 <div className="wrapper">

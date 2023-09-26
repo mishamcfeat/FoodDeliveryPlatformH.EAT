@@ -46,7 +46,7 @@ body .home-page {
     }
 }
 
-.app {
+.home-page .app {
     background-color: var(--theme-bg-color);
     height: 100vh;
     width: 95vw;
@@ -64,11 +64,12 @@ body .home-page {
     font-weight: 500;
 }
 
-.header {
+.home-page .header {
+    position: relative;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    justify-content: flex-end;
     height: 75px;
     width: 100%;
     border-bottom: 1px solid var(--border-color);
@@ -79,19 +80,20 @@ body .home-page {
         padding: 0 16px;
     }
 
+
     .buttons__both {
         display: flex; // Display children in a row
-        justify-content: flex-end; // Align children to the far right
-        margin-left: 10em;
-        margin-right: 100px;
-        gap: 10px; // Add a 10px gap between children
+        align-items: center;
+        margin-left: auto;
+        flex-shrink: 0;
+        gap: 20px; // Add a 10px gap between children
 
-        & .buttons__login,
-        & .buttons__signup {
+        .buttons__login,
+        .buttons__signup,
+        .user-name-button {
             width: 180px;
             height: 50px;
             border-radius: 25px;
-            margin-top: 0px;
             font-weight: 700;
             font-size: 14px;
             letter-spacing: 1.15px;
@@ -126,23 +128,22 @@ body .home-page {
         }
     }
 
+
+
     &-logo {
         // Styles for the logo, adapted from your .switch__logo styles
         width: 75px;
         height: auto;
-        margin-bottom: 20px;
-        display: block;
+        align-items: center;
+        display: flex;
         border-radius: 14px;
         margin-left: auto;
         margin-right: auto;
         cursor: pointer;
 
-        position: absolute; // Taken from the .switch class
-        top: 5px;
-        left: 10px;
-        z-index: 200;
+        position: absolute;
+        left: 20px;
         padding: 0px;
-        background-color: var(--neu-1);
         box-shadow:
             4px 4px 10px var(--neu-2),
             -4;
@@ -174,33 +175,20 @@ body .home-page {
     }
 }
 
-.menu-circle {
-    width: 15px;
-    height: 15px;
-    background-color: #f96057;
-    border-radius: 50%;
-    box-shadow:
-        24px 0 0 0 #f8ce52,
-        48px 0 0 0 #5fcf65;
-    margin-right: 195px;
-    flex-shrink: 0;
 
-    @media screen and (max-width: 945px) {
-        display: none;
-    }
-}
-
-.search-bar {
-    height: 40px;
+.home-page .search-bar {
+    position: absolute;
+    left: -400px;
     display: flex;
     align-items: center;
-    margin-left: 45em;
+    height: 40px;
     width: 100%;
     max-width: 300px;
     padding-left: 16px;
     border-radius: 4px;
 
     input {
+
         width: 100%;
         height: 100%;
         border: none;
@@ -211,7 +199,6 @@ body .home-page {
         font-weight: 500;
         padding: 0 20px 0 40px;
         box-shadow: 0 0 0 2px rgba(134, 140, 160, 2%);
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56.966 56.966' fill='%23717790c7'%3e%3cpath d='M55.146 51.887L41.588 37.786A22.926 22.926 0 0046.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 00.083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z'/%3e%3c/svg%3e");
         background-size: 14px;
         background-repeat: no-repeat;
         background-position: 16px 48%;
@@ -226,22 +213,15 @@ body .home-page {
     }
 }
 
-.wide {
-    .header-menu,
-    .header-profile {
-        display: none;
-    }
+.home-page .wide {
 
     .search-bar {
-        max-width: 800px;
+        position: static;
         margin: auto;
+        max-width: 600px;
         transition: 0.4s;
         box-shadow: 0 0 0 1px var(--border-color);
         padding-left: 0;
-    }
-
-    .menu-circle {
-        margin-right: 0;
     }
 }
 
@@ -263,7 +243,7 @@ body .home-page {
     }
 }
 
-.side-wrapper + .side-wrapper {
+.side-wrapper+.side-wrapper {
     margin-top: 20px;
 }
 
@@ -470,7 +450,7 @@ body .home-page {
         flex: 0 0 auto;
         flex-direction: column;
         width: calc(20%);
-        height: 200px;
+        height: 300px;
         font-size: 16px;
         border-radius: 14px;
         padding: 0;
@@ -499,8 +479,10 @@ body .home-page {
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
-            padding: 8px; /* You can adjust this padding */
-            height: 33.33%; /* This will ensure the text takes the remaining 1/3 space */
+            padding: 8px;
+            /* You can adjust this padding */
+            height: 33.33%;
+            /* This will ensure the text takes the remaining 1/3 space */
             font-weight: 400;
             margin-left: 0px;
 
@@ -536,7 +518,7 @@ body .home-page {
             width: 100%; // Adjust width for this breakpoint
             margin-top: 20px;
 
-            & + .app-card {
+            &+.app-card {
                 margin-right: 0;
             }
         }

@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
 
-* .restaurant-page {
+* .additem-page {
     outline: none;
     box-sizing: border-box;
 }
 
-.restaurant-page {
+.additem-page {
     --theme-bg-color: rgba(16, 18, 27, 40%);
     --theme-bg-main-header: rgba(16, 18, 27, 0.6);
     --border-color: rgba(113 119 144, 25%);
@@ -23,12 +23,12 @@
     --white: #f9f9f9;
 }
 
-html .additem {
+html .additem-page {
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
 }
 
-body .res {
+body .additem-page {
     font-family: var(--body-font);
     background-image: url("../../assets/images/noodles.jpg");
     background-size: cover;
@@ -64,11 +64,12 @@ body .res {
     font-weight: 500;
 }
 
-.additem .header {
+.additem-page .header {
+    position: relative;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    justify-content: flex-end;
     height: 75px;
     width: 100%;
     border-bottom: 1px solid var(--border-color);
@@ -81,17 +82,17 @@ body .res {
 
     .buttons__both {
         display: flex; // Display children in a row
-        justify-content: flex-end; // Align children to the far right
-        margin-left: 10em;
-        margin-right: 100px;
-        gap: 10px; // Add a 10px gap between children
+        align-items: center;
+        margin-left: auto;
+        flex-shrink: 0;
+        gap: 20px; // Add a 10px gap between children
 
         & .buttons__login,
-        & .buttons__signup {
+        & .buttons__signup,
+        & .user-name-button {
             width: 180px;
             height: 50px;
             border-radius: 25px;
-            margin-top: 0px;
             font-weight: 700;
             font-size: 14px;
             letter-spacing: 1.15px;
@@ -130,19 +131,17 @@ body .res {
         // Styles for the logo, adapted from your .switch__logo styles
         width: 75px;
         height: auto;
-        margin-bottom: 20px;
-        display: block;
+        align-items: center;
+        display: flex;
         border-radius: 14px;
         margin-left: auto;
         margin-right: auto;
         cursor: pointer;
 
-        position: absolute; // Taken from the .switch class
+        position: absolute;
+        left: 20px;
         top: 5px;
-        left: 10px;
-        z-index: 200;
         padding: 0px;
-        background-color: var(--neu-1);
         box-shadow:
             4px 4px 10px var(--neu-2),
             -4;
@@ -211,13 +210,15 @@ body .res {
 }
 
 .wide {
+
     .header-menu,
     .header-profile {
         display: none;
     }
 
     .search-bar {
-        max-width: 800px;
+        position: static;
+        max-width: 600px;
         margin: auto;
         transition: 0.4s;
         box-shadow: 0 0 0 1px var(--border-color);
@@ -325,10 +326,32 @@ body .res {
 
         .content-section-title {
             text-align: center;
-            font-size: 24px; // Adjust as needed
+            font-size: 2px; // Adjust as needed
             margin-bottom: 20px;
             margin-right: 80%;
             font-weight: bold;
+        }
+
+        .back-button {
+            background-color: rgb(16, 18, 27);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 10px 20px;
+            /* increase padding a bit for better look */
+            border-radius: 4px;
+            margin-right: 10px;
+            /* retain some space between the button and the title */
+            text-align: center;
+            display: inline-block;
+            /* display as inline-block so it aligns properly with the text */
+        }
+
+        .back-button:hover,
+        .addbutton:hover {
+            background-color: #141619;
+            /* slightly darker shade for hover */
         }
 
         .content-section {
@@ -377,16 +400,18 @@ body .res {
                             margin-top: auto;
                             width: 100%;
                             height: 10%;
+                            cursor: pointer;
                         }
+
                         .quantity-select-container {
                             display: flex;
                             align-items: center;
                             margin-bottom: 10px; // Spacing between dropdown and the button
-                        
+
                             label {
                                 margin-right: 10px;
                             }
-                        
+
                             select {
                                 padding: 5px;
                                 font-size: 14px;
