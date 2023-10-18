@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import axios from 'axios';
 
 const CreateRestaurantPage = () => {
-    const nameIdea = useRef();
     const nameRef = useRef();
     const imageRef = useRef();
 
