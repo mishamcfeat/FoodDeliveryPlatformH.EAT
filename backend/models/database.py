@@ -5,6 +5,7 @@ import datetime
 
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = 'users'
 
@@ -15,7 +16,6 @@ class User(Base):
     address = Column(String(300), index=True)
     phone_number = Column(String(20), unique=True, index=True)
     scopes = Column(String, default="read:profile")
-
 
 
 class Restaurant(Base):
