@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, Response, Request
+from fastapi import APIRouter, HTTPException, Depends, status, Response, Request
 from fastapi.security import OAuth2PasswordBearer
 from starlette.responses import JSONResponse
 from sqlalchemy.orm import Session
