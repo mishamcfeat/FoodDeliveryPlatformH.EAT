@@ -7,8 +7,7 @@ import HomePage from './screens/HomePage/HomePage.jsx';
 import RestaurantPage from './screens/RestaurantPage/RestaurantPage.jsx';
 import AddItem from './screens/AddItem/AddItem.jsx';
 import { AuthContext } from './AuthContext';
-
-
+import { BasketProvider } from './screens/HomePage/BasketContext'; // Import BasketProvider
 
 function App() {
 
@@ -21,16 +20,18 @@ function App() {
 
   return (
     <AuthContext.Provider value={value}>
-      <Router>
-        <div>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login-signup" element={<LoginSignup />} />
-            <Route path="/restaurant/:id" element={<RestaurantPage />} />
-            <Route path="/restaurant/:id/menu/:itemid" element={<AddItem />} />
-          </Routes>
-        </div>
-      </Router>
+      <BasketProvider> {/* Wrap your components with BasketProvider */}
+        <Router>
+          <div>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login-signup" element={<LoginSignup />} />
+              <Route path="/restaurant/:id" element={<RestaurantPage />} />
+              <Route path="/restaurant/:id/menu/:itemid" element={<AddItem />} />
+            </Routes>
+          </div>
+        </Router>
+      </BasketProvider>
     </AuthContext.Provider>
   );
 }

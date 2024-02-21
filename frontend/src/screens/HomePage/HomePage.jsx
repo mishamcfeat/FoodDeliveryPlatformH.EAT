@@ -1,12 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './HomePage.scss';
 import logo from '../../assets/images/HEAT-logo.jpeg';
 import { useAuth } from '../../AuthContext';
+import { BasketContext } from './BasketContext'
 
 
 axios.defaults.withCredentials = true;
+
+
 const HomePage = () => {
 
     const BASE_URL = 'http://localhost:8000';
@@ -79,6 +82,12 @@ const HomePage = () => {
         };
     }, []);
 
+    const navigate = useNavigate();
+    const { basket } = useContext(BasketContext);
+
+    const getTotalItems = () => basket.reduce((total, item) => total + item.quantity, 0);
+    const getTotalCost = () => basket.reduce((total, item) => total + item.price * item.quantity, 0);
+
     const appsCardRef = useRef(null);
 
     const smoothScroll = (element, targetPosition, duration) => {
@@ -120,6 +129,9 @@ const HomePage = () => {
                     <div className="search-bar">
                         <input ref={searchBarInput} type="text" placeholder="Search" />
                     </div>
+                    <button onClick={() => navigate('/basket')}>
+                        Basket ({getTotalItems()} items) - £{getTotalCost().toFixed(2)}
+                    </button>
                     <div className="buttons__both">
                         {
                             user ?
