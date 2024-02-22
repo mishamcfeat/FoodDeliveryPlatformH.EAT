@@ -6,8 +6,8 @@ import LoginSignup from './screens/LoginSignup/LoginSignup.jsx';
 import HomePage from './screens/HomePage/HomePage.jsx';
 import RestaurantPage from './screens/RestaurantPage/RestaurantPage.jsx';
 import AddItem from './screens/AddItem/AddItem.jsx';
-import { AuthContext } from './AuthContext';
-import { BasketProvider } from './screens/HomePage/BasketContext'; // Import BasketProvider
+import { AuthContextProvider } from './context/AuthContext.js';
+import { BasketContextProvider } from './context/BasketContext.js'; 
 
 function App() {
 
@@ -19,8 +19,8 @@ function App() {
   };
 
   return (
-    <AuthContext.Provider value={value}>
-      <BasketProvider> {/* Wrap your components with BasketProvider */}
+    <AuthContextProvider value={value}>
+      <BasketContextProvider> 
         <Router>
           <div>
             <Routes>
@@ -31,8 +31,8 @@ function App() {
             </Routes>
           </div>
         </Router>
-      </BasketProvider>
-    </AuthContext.Provider>
+      </BasketContextProvider>
+    </AuthContextProvider>
   );
 }
 

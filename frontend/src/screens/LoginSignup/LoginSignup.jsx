@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import './LoginSignup.scss';
 import { Helmet } from 'react-helmet';
-import { AuthContext } from '../../AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 
 import facebook from '../../assets/images/facebook.jpeg';
 import linkedin from '../../assets/images/linkedin.jpeg';

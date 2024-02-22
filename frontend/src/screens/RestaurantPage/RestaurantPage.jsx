@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import './RestaurantPage.scss';
 import logo from '../../assets/images/HEAT-logo.jpeg';  // adjust as necessary
-import { useAuth } from '../../AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 
 const RestaurantPage = () => {

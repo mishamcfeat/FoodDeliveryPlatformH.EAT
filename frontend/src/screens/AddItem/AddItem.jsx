@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from 'axios';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import './AddItem.scss';
 import logo from '../../assets/images/HEAT-logo.jpeg';  // adjust as necessary
-import { useAuth } from '../../AuthContext';
+import { useAuth } from '../../context/AuthContext';
+import { BasketContext } from '../../context/BasketContext';
 
 
 const AddItem = () => {
@@ -87,10 +88,13 @@ const AddItem = () => {
         }
     };
 
+    const { addItem, removeItem } = useContext(BasketContext);
+
     const handleAddToOrder = async () => {
         const orderId = await initiateOrder(restaurant.id);
         if (orderId) {
             await addItemToOrder(orderId, menuItem, menuItem.price);
+            addItem(menuItem, selectedQuantity);  // add the item to the basket
         }
     };
 

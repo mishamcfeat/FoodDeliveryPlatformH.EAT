@@ -3,8 +3,8 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import './HomePage.scss';
 import logo from '../../assets/images/HEAT-logo.jpeg';
-import { useAuth } from '../../AuthContext';
-import { BasketContext } from './BasketContext'
+import { useAuth } from '../../context/AuthContext';
+import { BasketContext } from '../../context/BasketContext'
 
 
 axios.defaults.withCredentials = true;
@@ -83,10 +83,7 @@ const HomePage = () => {
     }, []);
 
     const navigate = useNavigate();
-    const { basket } = useContext(BasketContext);
-
-    const getTotalItems = () => basket.reduce((total, item) => total + item.quantity, 0);
-    const getTotalCost = () => basket.reduce((total, item) => total + item.price * item.quantity, 0);
+    const { basket, addItemToBasket, removeItemFromBasket, getTotalCost } = useContext(BasketContext);
 
     const appsCardRef = useRef(null);
 
@@ -129,8 +126,8 @@ const HomePage = () => {
                     <div className="search-bar">
                         <input ref={searchBarInput} type="text" placeholder="Search" />
                     </div>
-                    <button onClick={() => navigate('/basket')}>
-                        Basket ({getTotalItems()} items) - £{getTotalCost().toFixed(2)}
+                    <button className="buttons__login" onClick={() => navigate('/basket')}>
+                        Basket £{getTotalCost().toFixed(2)}
                     </button>
                     <div className="buttons__both">
                         {
