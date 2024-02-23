@@ -13,7 +13,7 @@ axios.defaults.baseURL = 'http://localhost:8000';
 
 const HomePage = () => {
 
-    const { user, loading } = useAuth();
+    const { user } = useAuth();
     const [restaurants, setRestaurants] = useState([]);
 
     useEffect(() => {
@@ -78,7 +78,6 @@ const HomePage = () => {
     }, []);
 
     const navigate = useNavigate();
-    const [basketChange, setBasketChange] = useState(Date.now());
     const [totalCost, setTotalCost] = useState(0);
     const { getTotalCost } = useContext(BasketContext);
 
@@ -89,14 +88,8 @@ const HomePage = () => {
         };
     
         updateTotalCost();
-      }, [getTotalCost, basketChange]); // Re-run when getTotalCost changes
+      }, [getTotalCost]); // Re-run when getTotalCost changes
 
-      const modifyBasket = async (item) => {
-        // Your add/remove item logic here
-        await addItem(item);
-        setBasketChange(Date.now()); // Trigger useEffect to re-run
-    };
-    
     const appsCardRef = useRef(null);
 
     const smoothScroll = (element, targetPosition, duration) => {
