@@ -88,9 +88,20 @@ body .home-page {
         flex-shrink: 0;
         gap: 20px; // Add a 10px gap between children
 
+        .shopping-cart-icon {
+            position: absolute; /* Position the icon absolutely within the button */
+            left: 30px; /* Move the icon to the left; adjust the value as needed */
+            top: 50%; /* Center the icon vertically */
+            transform: translateY(-50%); /* This ensures the icon is centered regardless of its height */
+            width: 27px; /* Set the width of your icon */
+            height: auto; /* Keep the aspect ratio */
+        }
+
         .buttons__login,
         .buttons__signup,
-        .user-name-button {
+        .user-name-button,
+        .cart-button {
+            position: relative;
             width: 180px;
             height: 50px;
             border-radius: 25px;

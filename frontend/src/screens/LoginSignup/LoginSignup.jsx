@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './LoginSignup.scss';
 import { Helmet } from 'react-helmet';
 import { AuthContext } from '../../context/AuthContext';
+import { jwtDecode } from 'jwt-decode';
 
 import facebook from '../../assets/images/facebook.jpeg';
 import linkedin from '../../assets/images/linkedin.jpeg';
@@ -19,11 +20,12 @@ const LoginSignup = () => {
     const [password, setPassword] = useState('');
     const BASE_URL_USERS = 'http://localhost:8000/users';
 
-    const { setUser } = useContext(AuthContext);
+    const { setUser, setToken } = useContext(AuthContext);
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
+    
         if (isLogin && (!email || !password)) {
             console.error("Email and password fields are required for login!");
             return;
@@ -31,24 +33,20 @@ const LoginSignup = () => {
             console.error("All fields are required for sign up!");
             return;
         }
-
+    
         const endpoint = isLogin ? 'login/' : 'register/';
         const data = isLogin ? { email, password } : { username, email, password };
-
+    
         axios.post(`${BASE_URL_USERS}/${endpoint}`, data)
             .then(res => {
                 console.log(res);
-
-                // Set user's name after successful login or sign-up
-                return axios.get(`${BASE_URL_USERS}/profile/${data.email}/`);
-            })
-            .then(res => {
-                console.log(res);
     
-                // Set user's details after successful retrieval
-                if (res.data && res.data.user) {
-                    setUser(res.data.user); // Assuming user contains all the user details you need
-                }
+                // Store the token in the context
+                setToken(res.data.token);
+    
+                // Decode the token to get the user's details
+                const user = jwtDecode(res.data.token);
+                setUser(user);
     
                 // Clear the input fields
                 setUsername('');

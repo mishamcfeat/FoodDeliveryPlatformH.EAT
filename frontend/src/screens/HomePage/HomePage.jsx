@@ -5,21 +5,19 @@ import './HomePage.scss';
 import logo from '../../assets/images/HEAT-logo.jpeg';
 import { useAuth } from '../../context/AuthContext';
 import { BasketContext } from '../../context/BasketContext'
+import shoppingCartIcon from '../../assets/images/basket.png';
 
 
 axios.defaults.withCredentials = true;
-
+axios.defaults.baseURL = 'http://localhost:8000';
 
 const HomePage = () => {
 
-    const BASE_URL = 'http://localhost:8000';
+    const { user, loading } = useAuth();
     const [restaurants, setRestaurants] = useState([]);
 
-
     useEffect(() => {
-
-        // Fetch the restaurants data from your FastAPI backend
-        axios.get(`${BASE_URL}/restaurants/list_restaurants/`)
+        axios.get(`/restaurants/list_restaurants/`)
             .then(response => {
                 setRestaurants(response.data.restaurants);
                 console.log(response.data.restaurants);
@@ -29,10 +27,9 @@ const HomePage = () => {
             });
     }, []);
 
-    // Render the restaurants:
     const renderRestaurants = () => {
         return restaurants.map(restaurant => {
-            const sanitizedRestaurantName = restaurant.name.replace(/ /g, ''); // Replace spaces with an empty string
+            const sanitizedRestaurantName = restaurant.name.replace(/ /g, '');
             const imagePath = require(`../../assets/images/${sanitizedRestaurantName}/${restaurant.name}.jpg`);
 
             return (
@@ -53,7 +50,6 @@ const HomePage = () => {
     const searchBarInput = useRef(null);
 
     useEffect(() => {
-
         const mainHeaderLinkNodes = mainHeaderLinks.current.querySelectorAll('.main-header-link');
         const handlers = [];
 
@@ -74,7 +70,6 @@ const HomePage = () => {
             document.querySelector('.header').classList.remove('wide');
         });
 
-        // Clean up event listeners on component unmount
         return () => {
             handlers.forEach(({ element, type, handler }) => {
                 element.removeEventListener(type, handler);
@@ -83,8 +78,25 @@ const HomePage = () => {
     }, []);
 
     const navigate = useNavigate();
-    const { basket, addItemToBasket, removeItemFromBasket, getTotalCost } = useContext(BasketContext);
+    const [basketChange, setBasketChange] = useState(Date.now());
+    const [totalCost, setTotalCost] = useState(0);
+    const { getTotalCost } = useContext(BasketContext);
 
+    useEffect(() => {
+        const updateTotalCost = async () => {
+          const cost = await getTotalCost(); // This now correctly waits for the async function
+          setTotalCost(cost);
+        };
+    
+        updateTotalCost();
+      }, [getTotalCost, basketChange]); // Re-run when getTotalCost changes
+
+      const modifyBasket = async (item) => {
+        // Your add/remove item logic here
+        await addItem(item);
+        setBasketChange(Date.now()); // Trigger useEffect to re-run
+    };
+    
     const appsCardRef = useRef(null);
 
     const smoothScroll = (element, targetPosition, duration) => {
@@ -105,39 +117,38 @@ const HomePage = () => {
 
     const scroll = (direction) => {
         if (appsCardRef.current && appsCardRef.current.children[0]) {
-            const cardWidth = appsCardRef.current.children[0].offsetWidth; // uses the width of the card
-            const cardMargin = 20; // + margin-right of 20px for .app-card
-            const numberOfItemsToScroll = 1;  // scrolls one item at a time
-            const distance = (cardWidth + cardMargin) * numberOfItemsToScroll; // calculates the scrolling distance
+            const cardWidth = appsCardRef.current.children[0].offsetWidth;
+            const cardMargin = 20;
+            const numberOfItemsToScroll = 1;
+            const distance = (cardWidth + cardMargin) * numberOfItemsToScroll;
 
-            // Call the smoothScroll function
-            smoothScroll(appsCardRef.current, appsCardRef.current.scrollLeft + distance * direction, 300); // 300ms duration of scrolling
+            smoothScroll(appsCardRef.current, appsCardRef.current.scrollLeft + distance * direction, 300);
         }
     };
 
-    const { user } = useAuth();
-
     return (
         <div className='home-page'>
-
             <div className="app">
                 <div className="header">
                     <img className="header-logo" src={logo} />
                     <div className="search-bar">
                         <input ref={searchBarInput} type="text" placeholder="Search" />
                     </div>
-                    <button className="buttons__login" onClick={() => navigate('/basket')}>
-                        Basket £{getTotalCost().toFixed(2)}
-                    </button>
                     <div className="buttons__both">
-                        {
-                            user ?
-                                <button className="user-name-button">{user.username}</button> :
-                                <Link to="/login-signup">
-                                    <button className="buttons__login">LOG IN</button>
-                                    <button className="buttons__signup">SIGN UP</button>
-                                </Link>
-                        }
+                    {
+                        user ?
+                            <>
+                                <button className="cart-button" onClick={() => navigate('/basket')}>
+                                    <img src={shoppingCartIcon} alt='Basket' className='shopping-cart-icon'/>
+                                    £{totalCost.toFixed(2)}
+                                </button>
+                                <button className="user-name-button">{user.username}</button>
+                            </> :
+                            <Link to="/login-signup">
+                                <button className="buttons__login">LOG IN</button>
+                                <button className="buttons__signup">SIGN UP</button>
+                            </Link>
+                    }
                     </div>
                 </div>
                 <div className="wrapper">
@@ -148,7 +159,6 @@ const HomePage = () => {
                                 <a href="#">
                                     Sort
                                 </a>
-
                             </div>
                         </div>
                         <div className="side-wrapper">
@@ -187,7 +197,6 @@ const HomePage = () => {
                     </div>
                     <div className="main-container">
                         <div className="main-header">
-
                             <div className="header-menu" ref={mainHeaderLinks}>
                                 <a className="main-header-link is-active" href="#">
                                     All
@@ -213,7 +222,6 @@ const HomePage = () => {
                                 <a className="main-header-link" href="#">
                                     Desserts
                                 </a>
-
                             </div>
                         </div>
                         <div className="content-wrapper">
@@ -232,7 +240,6 @@ const HomePage = () => {
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     );

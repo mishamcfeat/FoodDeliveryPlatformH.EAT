@@ -88,13 +88,13 @@ const AddItem = () => {
         }
     };
 
-    const { addItem, removeItem } = useContext(BasketContext);
+    const { addItemToBasket, removeItemFromBasket } = useContext(BasketContext);
 
     const handleAddToOrder = async () => {
         const orderId = await initiateOrder(restaurant.id);
         if (orderId) {
             await addItemToOrder(orderId, menuItem, menuItem.price);
-            addItem(menuItem, selectedQuantity);  // add the item to the basket
+            addItemToBasket(menuItem, selectedQuantity);  // add the item with quantity to the basket
         }
     };
 
