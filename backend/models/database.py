@@ -46,7 +46,7 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     restaurant_id = Column(Integer, ForeignKey('restaurants.id'), nullable=False)
     total_amount = Column(Float, nullable=False)
-    status = Column(String, nullable=False) # Can use Enum for predefined statuses
+    status = Column(String, nullable=False)
     delivery_address = Column(String, nullable=False)
     time_placed = Column(DateTime, default=datetime.datetime.utcnow)
 
