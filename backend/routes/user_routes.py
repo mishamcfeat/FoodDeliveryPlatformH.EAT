@@ -101,6 +101,23 @@ def get_current_user(request: Request):
     return {"user_id": user_id, "scopes": user_scopes.split()}
 
 
+@router.get("/profile/id/{user_id}/")
+async def get_profile_by_id(user_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    user_details = db.query(User).filter(User.id == user_id).first()
+
+    if not user_details:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Check if the user_id from JWT matches the user_id fetched using id
+    if user_details.id != current_user["user_id"]:
+        raise HTTPException(status_code=403, detail="Access Denied")
+
+    exclude_fields = {"password", "_sa_instance_state"}
+    user_dict = {k: v for k, v in user_details.__dict__.items() if k not in exclude_fields}
+
+    return {"user": user_dict}
+
+
 @router.get("/profile/{user_email}/")
 async def get_profile_by_email(user_email: str, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     user_details = db.query(User).filter(User.email == user_email).first()

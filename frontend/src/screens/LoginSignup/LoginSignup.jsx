@@ -11,21 +11,31 @@ import linkedin from '../../assets/images/linkedin.jpeg';
 import twitter from '../../assets/images/twitter.jpeg';
 import logo from '../../assets/images/HEAT-logo.jpeg';
 
-const LoginSignup = () => {
 
+// Base URL for the users API
+
+
+// This is a functional component for handling both login and signup
+const LoginSignup = () => {
+    // Hook from 'react-router-dom' to programmatically navigate
     const navigate = useNavigate();
+
+    // State hooks for login/signup form fields
     const [isLogin, setIsLogin] = useState(false);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const BASE_URL_USERS = 'http://localhost:8000/users';
+    const baseURL = 'http://localhost:8000/users';
 
+    // Context hooks for setting user and token
     const { setUser, setToken } = useContext(AuthContext);
 
-
+    // Event handler for form submission
     const handleSubmit = (event) => {
+        // Prevent the default form submission behavior
         event.preventDefault();
-    
+
+        // Validation: Ensure all required fields are filled out
         if (isLogin && (!email || !password)) {
             console.error("Email and password fields are required for login!");
             return;
@@ -33,33 +43,38 @@ const LoginSignup = () => {
             console.error("All fields are required for sign up!");
             return;
         }
-    
+
+        // Determine the API endpoint and data based on whether this is login or signup
         const endpoint = isLogin ? 'login/' : 'register/';
         const data = isLogin ? { email, password } : { username, email, password };
-    
-        axios.post(`${BASE_URL_USERS}/${endpoint}`, data)
+
+        // Make a POST request to the appropriate endpoint
+        axios.post(`${baseURL}/${endpoint}`, data)
             .then(res => {
                 console.log(res);
-    
-                // Store the token in the context
+
+                // On successful response, store the token in context
                 setToken(res.data.token);
-    
-                // Decode the token to get the user's details
+
+                // Decode the token to get user details and store in context
                 const user = jwtDecode(res.data.token);
                 setUser(user);
-    
-                // Clear the input fields
+                console.log(user);
+
+                // Clear the form fields
                 setUsername('');
                 setEmail('');
                 setPassword('');
-    
-                // Navigate back to the homepage
+
+                // Navigate to the homepage
                 navigate('/');
             })
             .catch(err => {
+                // Log any errors that occur during the request
                 console.error("An error occurred:", err);
             });
     };
+
 
     const switchCtn = useRef(null);
     const switchC1 = useRef(null);
