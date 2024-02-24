@@ -1,15 +1,26 @@
-import { createContext, useContext, useState } from 'react';
+import { useEffect, createContext, useContext, useState } from 'react';
 import { jwtDecode } from 'jwt-decode'; // Corrected import statement
+import axios from 'axios';
 
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedUser = jwtDecode(token);
+      setUser(decodedUser);
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+    }
+  }, []);
+
   const setToken = token => {
     localStorage.setItem('token', token);
-    const decodedUser = jwtDecode(token); // Ensure this line correctly decodes the token
+    const decodedUser = jwtDecode(token);
     setUser(decodedUser);
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
   };
 
   return (

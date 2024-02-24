@@ -6,8 +6,8 @@ import LoginSignup from './screens/LoginSignup/LoginSignup.jsx';
 import HomePage from './screens/HomePage/HomePage.jsx';
 import RestaurantPage from './screens/RestaurantPage/RestaurantPage.jsx';
 import AddItem from './screens/AddItem/AddItem.jsx';
-import { AuthContextProvider } from './context/AuthContext.js';
-import { BasketContextProvider } from './context/BasketContext.js'; 
+import { AuthContextProvider } from './context/AuthContext.jsx';
+import { BasketContextProvider } from './context/BasketContext.jsx'; 
 
 function App() {
 

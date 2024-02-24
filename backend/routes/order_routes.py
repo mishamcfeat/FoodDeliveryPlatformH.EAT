@@ -81,6 +81,51 @@ async def add_item(order_id: int, item: OrderItemSchema, db: Session = Depends(g
     # Return a success message
     return {"message": "Item added successfully"}
 
+# This route removes an item from an order
+@router.delete("/remove_item_from_order/{order_id}/{item_id}/")
+async def remove_item_from_order(order_id: int, item_id: int, db: Session = Depends(get_db), user: dict = Depends(get_current_user)):
+    # Ensure that the user making the request is the owner of the order or has permissions
+    db_order = db.query(Order).filter(Order.order_id == order_id, Order.user_id == user["user_id"]).first()
+    if not db_order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    # Find the specific item in the order
+    db_order_item = db.query(OrderItem).filter(OrderItem.order_id == order_id, OrderItem.id == item_id).first()
+    if not db_order_item:
+        raise HTTPException(status_code=404, detail="Order item not found")
+
+    # Remove the item from the order
+    db.delete(db_order_item)
+
+    # Update the order's total amount
+    db_order.total_amount -= db_order_item.quantity * db_order_item.price_at_time_of_order
+
+    db.commit()
+
+    return {"message": "Item removed successfully"}
+
+# This route updates the quantity of an order item
+@router.put("/update_item_quantity/{order_id}/{item_id}/")
+async def update_item_quantity(order_id: int, item_id: int, new_quantity: int, db: Session = Depends(get_db), user: dict = Depends(get_current_user)):
+    # Ensure that the user making the request is the owner of the order
+    db_order = db.query(Order).filter(Order.order_id == order_id, Order.user_id == user["user_id"]).first()
+    if not db_order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    # Find the specific item in the order
+    db_order_item = db.query(OrderItem).filter(OrderItem.order_id == order_id, OrderItem.id == item_id).first()
+    if not db_order_item:
+        raise HTTPException(status_code=404, detail="Order item not found")
+
+    # Update the item quantity
+    if new_quantity > 0:
+        db_order_item.quantity = new_quantity
+        db.commit()
+        return {"message": "Item quantity updated successfully"}
+    else:
+        # If the quantity is zero or less, it doesn't make sense, so we can either raise an error or treat it as a delete operation
+        raise HTTPException(status_code=400, detail="Invalid quantity")
+
 
 # This route finalises an order
 @router.post("/finalise_order/{order_id}/")
@@ -138,7 +183,7 @@ async def update_order(order_id: int, update_address: OrderUpdate, db: Session =
 
 
 # This route gets the items for a user's order
-@router.get("/orders/items", response_model=List[OrderItemSchema])
+@router.get("/items", response_model=List[OrderItemSchema])
 async def get_order_items_for_user(db: Session = Depends(get_db), user: dict = Depends(get_current_user)):
     user_id = user["user_id"]
     # Get the order items from the database
@@ -154,7 +199,7 @@ async def get_order_items_for_user(db: Session = Depends(get_db), user: dict = D
 
 
 # This route gets the total cost for a user's order
-@router.get("/orders/total", response_model=TotalCostSchema)
+@router.get("/total", response_model=TotalCostSchema)
 async def get_total_cost_for_user(db: Session = Depends(get_db), user: dict = Depends(get_current_user)):
     user_id = user["user_id"]
     # Calculate the total cost
