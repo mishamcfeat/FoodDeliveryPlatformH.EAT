@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "jwt-decode": "^4.0.0",
-    "react-dom": "^18.2.0"
-  }
-}

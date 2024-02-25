@@ -91,6 +91,10 @@ const AddItem = () => {
     const { addItemToBasket, removeItemFromBasket } = useContext(BasketContext);
 
     const handleAddToOrder = async () => {
+        if (!restaurant.id) {
+            console.error("Restaurant ID is undefined");
+            return;
+        }
         const orderId = await initiateOrder(restaurant.id);
         if (orderId) {
             await addItemToOrder(orderId, menuItem, menuItem.price);

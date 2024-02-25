@@ -7,8 +7,19 @@ export const BasketContext = createContext();
 export const BasketContextProvider = ({ children }) => {
   const [basket, setBasket] = useState([]);
   const { user } = useContext(AuthContext);
+  const [triggerFetch, setTriggerFetch] = useState(0); // Initialize as 0
   const baseURL = 'http://localhost:8000'; 
 
+  // Function to trigger a re-fetch of basket items
+  const refetchBasketItems = (newItem, quantityChanged) => {
+    if (!newItem && !quantityChanged) {
+      return;
+    }
+
+    setTriggerFetch(prev => prev + 1); // Increment by 1
+  };
+
+  // Fetch basket items when the user changes or triggerFetch changes
   useEffect(() => {
     const fetchBasketItems = async () => {
       if (user) {
@@ -24,7 +35,7 @@ export const BasketContextProvider = ({ children }) => {
     };
 
     fetchBasketItems();
-  }, [user]);
+  }, [user, triggerFetch]);
 
   const addItemToBasket = async (item, quantity = 1) => {
     if (user) {
@@ -38,6 +49,7 @@ export const BasketContextProvider = ({ children }) => {
             price_at_time_of_order: item.price
           }, { headers: { "Authorization": `Bearer ${user.token}` } });
           setBasket(prevBasket => [...prevBasket, { ...item, quantity }]);
+          refetchBasketItems();
         } catch (error) {
           console.error('Error adding item to order:', error);
         }
@@ -59,6 +71,7 @@ export const BasketContextProvider = ({ children }) => {
           setBasket(prevBasket => prevBasket.map(item => 
             item.id === itemId ? { ...item, quantity: newQuantity } : item
           ));
+          refetchBasketItems();
         } catch (error) {
           console.error('Error updating item quantity:', error);
         }
@@ -76,12 +89,12 @@ export const BasketContextProvider = ({ children }) => {
           headers: { "Authorization": `Bearer ${user.token}` }
         });
         setBasket(prevBasket => prevBasket.filter(item => item.id !== itemId));
+        refetchBasketItems();
       } catch (error) {
         console.error('Error removing item from order:', error);
       }
     }
   };
-
 
   const getTotalCost = async () => {
     if (user) {
@@ -101,11 +114,12 @@ export const BasketContextProvider = ({ children }) => {
 
   return (
     <BasketContext.Provider value={{
-      basket, 
-      addItemToBasket, 
-      updateItemQuantity, 
-      removeItemFromBasket, 
-      getTotalCost
+      basket,
+      addItemToBasket,
+      updateItemQuantity,
+      removeItemFromBasket,
+      getTotalCost,
+      refetchBasketItems // Make sure to include this
     }}>
       {children}
     </BasketContext.Provider>

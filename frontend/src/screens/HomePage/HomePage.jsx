@@ -6,7 +6,7 @@ import logo from '../../assets/images/HEAT-logo.jpeg';
 import { useAuth } from '../../context/AuthContext';
 import { BasketContext } from '../../context/BasketContext'
 import shoppingCartIcon from '../../assets/images/basket.png';
-import CartSidebar from '../CartSidebar/CartSidebar'; // Adjust the path as necessary
+import CartSidebar from '../CartSidebar/CartSidebar'; 
 
 
 axios.defaults.withCredentials = true;
@@ -16,7 +16,7 @@ const baseURL = 'http://localhost:8000';
 const HomePage = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
-    const { basket, getTotalCost } = useContext(BasketContext);
+    const { basket, getTotalCost, refetchBasketItems } = useContext(BasketContext);
 
     const [restaurants, setRestaurants] = useState([]);
     const [username, setUsername] = useState('');
@@ -31,7 +31,7 @@ const HomePage = () => {
         if (user) {
             const userId = user.sub;
             try {
-                const res = await axios.get(`${baseURL}/users/profile/id/${userId}`);
+                const res = await axios.get(`${baseURL}/users/profile/id/${userId}/`);
                 setUsername(res.data.user.username);
             } catch (err) {
                 console.error("An error occurred:", err);
@@ -64,7 +64,6 @@ const HomePage = () => {
             );
         });
     }, [restaurants]);
-
 
     const handleLogout = useCallback(async () => {
         try {
@@ -150,16 +149,8 @@ const HomePage = () => {
         fetchData();
     }, [fetchData]);
 
+    // Consolidate the useEffect hooks related to getTotalCost
     useEffect(() => {
-        const updateTotalCost = async () => {
-          const cost = await getTotalCost(); // This now correctly waits for the async function
-          setTotalCost(cost);
-        };
-    
-        updateTotalCost();
-      }, [getTotalCost]); // Re-run when getTotalCost changes
-
-      useEffect(() => {
         let isMounted = true; // flag to check if the component is mounted
         const fetchTotalCost = async () => {
             try {
@@ -178,16 +169,17 @@ const HomePage = () => {
         return () => {
             isMounted = false;
         };
-    }, [getTotalCost]);
+    }, [getTotalCost, basket]); // Add basket as a dependency here
 
-    // Handlers for CartSidebar
+    useEffect(() => {
+        // Trigger a refetch of the basket items when needed
+        refetchBasketItems();
+    }, [basket])
 
       // Use setCartVisible to handle the closing of the cart sidebar
     const toggleCart = () => {
         setCartVisible(!isCartVisible);
     };
-
-
 
 
     return (
@@ -217,8 +209,9 @@ const HomePage = () => {
                     </div>
                     <CartSidebar
                         isCartVisible={isCartVisible}
-                        setCartVisible={setCartVisible} // Pass setCartVisible to handle closing the sidebar
-                        totalCost={totalCost} // Make sure totalCost state is defined and passed here
+                        setCartVisible={setCartVisible}
+                        basketItems={basket} // Pass the basket items to the CartSidebar
+                        totalCost={totalCost}
                     />
                 </div>
                 <div className="wrapper">
