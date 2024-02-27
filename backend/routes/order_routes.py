@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, aliased
 from sqlalchemy import func
 import datetime
 
@@ -181,20 +181,22 @@ async def update_order(order_id: int, update_address: OrderUpdate, db: Session =
     db.commit()
     return db_order
 
-
 # This route gets the items for a user's order
 @router.get("/items", response_model=List[OrderItemSchema])
 async def get_order_items_for_user(db: Session = Depends(get_db), user: dict = Depends(get_current_user)):
     user_id = user["user_id"]
     # Get the order items from the database
-    order_items = db.query(OrderItem)\
+    RestaurantItemAlias = aliased(RestaurantItem)
+    order_items = db.query(OrderItem, RestaurantItemAlias.name)\
         .join(Order, Order.order_id == OrderItem.order_id)\
+        .join(RestaurantItemAlias, RestaurantItemAlias.id == OrderItem.restaurant_item_id)\
         .filter(Order.user_id == user_id, Order.status == "In Progress")\
         .all()
     return [OrderItemSchema(
-        restaurant_item_id=item.restaurant_item_id,
-        quantity=item.quantity,
-        price_at_time_of_order=item.price_at_time_of_order
+        restaurant_item_id=item.OrderItem.restaurant_item_id,
+        quantity=item.OrderItem.quantity,
+        price_at_time_of_order=item.OrderItem.price_at_time_of_order,
+        name=item.name  # Add the name field
     ) for item in order_items]
 
 

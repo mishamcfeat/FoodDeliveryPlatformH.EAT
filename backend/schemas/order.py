@@ -45,5 +45,3 @@ class OrderOut(BaseModel):
 
 class TotalCostSchema(BaseModel):
     total_cost: float
-
-

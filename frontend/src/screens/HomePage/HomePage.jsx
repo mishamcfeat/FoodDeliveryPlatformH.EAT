@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState, useContext, useCallback, useMemo } from 'react';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import './HomePage.scss';
-import logo from '../../assets/images/HEAT-logo.jpeg';
-import { useAuth } from '../../context/AuthContext';
-import { BasketContext } from '../../context/BasketContext'
-import shoppingCartIcon from '../../assets/images/basket.png';
-import CartSidebar from '../CartSidebar/CartSidebar'; 
+import axios from 'axios';
 
+import logo from '../../assets/images/HEAT-logo.jpeg';
+import shoppingCartIcon from '../../assets/images/basket.png';
+import './HomePage.scss';
+
+import { useAuth } from '../../context/AuthContext';
+import CartSidebar from '../CartSidebar/CartSidebar';
 
 axios.defaults.withCredentials = true;
 
@@ -16,12 +16,9 @@ const baseURL = 'http://localhost:8000';
 const HomePage = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
-    const { basket, getTotalCost, refetchBasketItems } = useContext(BasketContext);
-
+    const [isCartVisible, setCartVisible] = useState(false);
     const [restaurants, setRestaurants] = useState([]);
     const [username, setUsername] = useState('');
-    const [isCartVisible, setCartVisible] = useState(false); // State to control CartSidebar visibility
-    const [totalCost, setTotalCost] = useState(0);
 
     const mainHeaderLinks = useRef(null);
     const searchBarInput = useRef(null);
@@ -70,11 +67,12 @@ const HomePage = () => {
             const response = await axios.post(`${baseURL}/users/logout/`);
             if (response.data.message === 'Logged out') {
                 localStorage.removeItem('token');
+                navigate('/');
             }
         } catch (error) {
             console.error('An error occurred while logging out:', error);
         }
-    }, []);
+    }, [navigate]);
 
     // Scroll function for carousel
     const scroll = (direction) => {
@@ -104,115 +102,39 @@ const HomePage = () => {
         }
     };
 
-
-    useEffect(() => {
-        const mainHeaderLinkNodes = mainHeaderLinks.current.querySelectorAll('.main-header-link');
-        const handlers = [];
-
-        mainHeaderLinkNodes.forEach((link) => {
-            const handler = function () {
-                mainHeaderLinkNodes.forEach(lnk => lnk.classList.remove('is-active'));
-                this.classList.add('is-active');
-            };
-            link.addEventListener('click', handler);
-            handlers.push({ element: link, type: 'click', handler });
-        });
-
-        searchBarInput.current.addEventListener('focus', () => {
-            document.querySelector('.header').classList.add('wide');
-        });
-
-        searchBarInput.current.addEventListener('blur', () => {
-            document.querySelector('.header').classList.remove('wide');
-        });
-
-        return () => {
-            handlers.forEach(({ element, type, handler }) => {
-                element.removeEventListener(type, handler);
-            });
-        };
-    }, []);
-
-    
-    useEffect(() => {
-        const sidebar = document.querySelector('.cart-sidebar');
-        if (isCartVisible) {
-            sidebar.classList.add('visible');
-        } else {
-            sidebar.classList.remove('visible');
-        }
-        }, [isCartVisible]);
-
-
-
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
-    // Consolidate the useEffect hooks related to getTotalCost
-    useEffect(() => {
-        let isMounted = true; // flag to check if the component is mounted
-        const fetchTotalCost = async () => {
-            try {
-                const cost = await getTotalCost(); // wait for the promise to resolve
-                if (isMounted) {
-                    setTotalCost(cost); // then set the total cost
-                }
-            } catch (error) {
-                console.error('Error fetching total cost:', error);
-            }
-        };
-
-        fetchTotalCost();
-
-        // Cleanup function to set isMounted to false when the component unmounts
-        return () => {
-            isMounted = false;
-        };
-    }, [getTotalCost, basket]); // Add basket as a dependency here
-
-    useEffect(() => {
-        // Trigger a refetch of the basket items when needed
-        refetchBasketItems();
-    }, [basket])
-
-      // Use setCartVisible to handle the closing of the cart sidebar
     const toggleCart = () => {
         setCartVisible(!isCartVisible);
     };
-
 
     return (
         <div className='home-page'>
             <div className="app">
                 <div className="header">
-                    <img className="header-logo" src={logo} />
+                    <img className="header-logo" src={logo} alt="logo" />
                     <div className="search-bar">
                         <input ref={searchBarInput} type="text" placeholder="Search" />
                     </div>
                     <div className="buttons__both">
-                    {
-                        user ?
-                            <>
-                                <button className="cart-button" onClick={toggleCart}>
-                                    <img src={shoppingCartIcon} alt='Basket' className='shopping-cart-icon'/>
-                                    <span>Cart</span>
-                                </button>
-                                <button className="user-name-button">{username}</button>
-                                <button className="logout-button" onClick={handleLogout}>Logout</button>
-                            </> :
-                            <Link to="/login-signup">
-                                <button className="buttons__login">LOG IN</button>
-                                <button className="buttons__signup">SIGN UP</button>
-                            </Link>
-                    }
+                        {
+                            user ?
+                                <>
+                                    <button className="cart-button" onClick={toggleCart}>
+                                        <img src={shoppingCartIcon} alt='Basket' className='shopping-cart-icon'/>
+                                        <span>Cart</span>
+                                    </button>
+                                    <button className="user-name-button">{username}</button>
+                                    <button className="logout-button" onClick={handleLogout}>Logout</button>
+                                </> :
+                                <Link to="/login-signup">
+                                    <button className="buttons__login">LOG IN</button>
+                                    <button className="buttons__signup">SIGN UP</button>
+                                </Link>
+                        }
                     </div>
-                    <CartSidebar
-                        isCartVisible={isCartVisible}
-                        setCartVisible={setCartVisible}
-                        basketItems={basket} // Pass the basket items to the CartSidebar
-                        totalCost={totalCost}
-                    />
                 </div>
                 <div className="wrapper">
                     <div className="left-side">
@@ -303,6 +225,10 @@ const HomePage = () => {
                         </div>
                     </div>
                 </div>
+                <CartSidebar
+                    isCartVisible={isCartVisible}
+                    toggleCart={toggleCart}
+                />
             </div>
         </div>
     );
