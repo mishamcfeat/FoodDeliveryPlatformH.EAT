@@ -11,6 +11,7 @@ import CartSidebar from '../CartSidebar/CartSidebar';
 
 axios.defaults.withCredentials = true;
 
+
 const baseURL = 'http://localhost:8000';
 
 const HomePage = () => {
@@ -56,7 +57,7 @@ const HomePage = () => {
                     <div className='text-container'>
                         <div className="subtext">{restaurant.name}</div>
                         <div className="microtext">{restaurant.address}</div>
-                    </div>
+                    </div>      
                 </Link>
             );
         });
